@@ -1,7 +1,10 @@
 package kr.spot.core.member.application
 
 import kr.spot.core.member.domain.Member
-import kr.spot.core.member.infrastructure.*
+import kr.spot.core.member.infrastructure.MemberRepository
+import kr.spot.core.member.infrastructure.PreferredCategoryRepository
+import kr.spot.core.member.infrastructure.PreferredRegionRepository
+import kr.spot.core.member.infrastructure.findByIdOrThrow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,16 +31,16 @@ class MemberQueryService(
     /**
      * 선호 카테고리 조회
      */
-    fun getPreferredCategories(memberId: Long): List<String> {
-        return preferredCategoryRepository.findAllByMemberId(memberId)
+    fun getPreferredCategories(memberId: Long): List<String> =
+        preferredCategoryRepository
+            .findAllByMemberId(memberId)
             .map { it.category }
-    }
 
     /**
      * 선호 지역 조회
      */
-    fun getPreferredRegions(memberId: Long): List<String> {
-        return preferredRegionRepository.findAllByMemberId(memberId)
+    fun getPreferredRegions(memberId: Long): List<String> =
+        preferredRegionRepository
+            .findAllByMemberId(memberId)
             .map { it.regionCode }
-    }
 }

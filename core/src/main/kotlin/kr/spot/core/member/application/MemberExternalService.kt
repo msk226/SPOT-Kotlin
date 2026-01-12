@@ -38,13 +38,14 @@ class MemberExternalService(
         }
 
         // 신규 회원 생성
-        val member = Member.of(
-            id = idGenerator.nextId(),
-            email = emailVo,
-            name = nickname,
-            loginType = loginType,
-            profileImageUrl = imageUrl
-        )
+        val member =
+            Member.of(
+                id = idGenerator.nextId(),
+                email = emailVo,
+                name = nickname,
+                loginType = loginType,
+                profileImageUrl = imageUrl
+            )
         return memberRepository.save(member).id
     }
 
@@ -52,18 +53,19 @@ class MemberExternalService(
      * 여러 회원 정보 조회 (study 모듈에서 사용)
      */
     @Transactional(readOnly = true)
-    fun getMemberInfoMap(memberIds: List<Long>): Map<Long, MemberInfo> {
-        return memberRepository.findAllById(memberIds)
+    fun getMemberInfoMap(memberIds: List<Long>): Map<Long, MemberInfo> =
+        memberRepository
+            .findAllById(memberIds)
             .associate { it.id to MemberInfo(it.name, it.profileImageUrl) }
-    }
 
     /**
      * 작성자 정보 조회 (study 모듈에서 사용)
      */
     @Transactional(readOnly = true)
     fun getWriterInfo(memberId: Long): WriterInfo {
-        val member = memberRepository.findById(memberId).orElse(null)
-            ?: return WriterInfo(memberId, "알 수 없음", null)
+        val member =
+            memberRepository.findById(memberId).orElse(null)
+                ?: return WriterInfo(memberId, "알 수 없음", null)
         return WriterInfo(member.id, member.name, member.profileImageUrl)
     }
 

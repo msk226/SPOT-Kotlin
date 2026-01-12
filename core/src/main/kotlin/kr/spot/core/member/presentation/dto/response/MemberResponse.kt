@@ -19,13 +19,14 @@ data class GetMemberInfoResponse(
     val email: String
 ) {
     companion object {
-        fun from(member: Member) = GetMemberInfoResponse(
-            memberId = member.id,
-            nickname = member.name,
-            profileImageUrl = member.profileImageUrl,
-            loginType = member.loginType,
-            email = member.email.value
-        )
+        fun from(member: Member) =
+            GetMemberInfoResponse(
+                memberId = member.id,
+                nickname = member.name,
+                profileImageUrl = member.profileImageUrl,
+                loginType = member.loginType,
+                email = member.email.value
+            )
     }
 }
 
@@ -34,10 +35,11 @@ data class GetMemberPreferCategoryResponse(
     val totalCount: Int
 ) {
     companion object {
-        fun from(categories: List<String>) = GetMemberPreferCategoryResponse(
-            categories = categories,
-            totalCount = categories.size
-        )
+        fun from(categories: List<String>) =
+            GetMemberPreferCategoryResponse(
+                categories = categories,
+                totalCount = categories.size
+            )
     }
 }
 
@@ -46,10 +48,11 @@ data class GetMemberPreferRegionResponse(
     val totalCount: Int
 ) {
     companion object {
-        fun from(regionCodes: List<String>) = GetMemberPreferRegionResponse(
-            regionCodes = regionCodes,
-            totalCount = regionCodes.size
-        )
+        fun from(regionCodes: List<String>) =
+            GetMemberPreferRegionResponse(
+                regionCodes = regionCodes,
+                totalCount = regionCodes.size
+            )
     }
 }
 

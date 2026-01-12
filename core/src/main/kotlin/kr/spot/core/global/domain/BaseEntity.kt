@@ -13,7 +13,6 @@ import java.time.LocalDateTime
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity {
-
     @CreatedDate
     var createdAt: LocalDateTime? = null
         protected set

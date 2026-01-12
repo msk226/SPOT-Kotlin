@@ -14,15 +14,14 @@ import org.hibernate.annotations.SQLRestriction
 class PreferredRegion private constructor(
     @Id
     val id: Long,
-
     val memberId: Long,
-
     val regionCode: String
 ) : BaseEntity() {
-
     companion object {
-        fun of(id: Long, memberId: Long, regionCode: String): PreferredRegion {
-            return PreferredRegion(id, memberId, regionCode)
-        }
+        fun of(
+            id: Long,
+            memberId: Long,
+            regionCode: String
+        ): PreferredRegion = PreferredRegion(id, memberId, regionCode)
     }
 }

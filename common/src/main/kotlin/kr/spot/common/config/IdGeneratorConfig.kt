@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class IdGeneratorConfig {
-
     @Bean
     fun idGenerator(): IdGenerator = Snowflake()
 }

@@ -6,9 +6,22 @@ import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
 import kr.spot.core.member.application.MemberCommandService
 import kr.spot.core.member.application.MemberQueryService
-import kr.spot.core.member.presentation.dto.request.*
-import kr.spot.core.member.presentation.dto.response.*
-import org.springframework.web.bind.annotation.*
+import kr.spot.core.member.presentation.dto.request.CreateTestMemberRequest
+import kr.spot.core.member.presentation.dto.request.RegisterPreferredCategoryRequest
+import kr.spot.core.member.presentation.dto.request.RegisterPreferredRegionRequest
+import kr.spot.core.member.presentation.dto.request.UpdateMemberNameRequest
+import kr.spot.core.member.presentation.dto.response.CreateTestMemberResponse
+import kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse
+import kr.spot.core.member.presentation.dto.response.GetMemberNameResponse
+import kr.spot.core.member.presentation.dto.response.GetMemberPreferCategoryResponse
+import kr.spot.core.member.presentation.dto.response.GetMemberPreferRegionResponse
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestAttribute
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "회원")
 @RestController
@@ -61,7 +74,7 @@ class MemberController(
     @PostMapping("/prefer-categories")
     fun registerPreferCategories(
         @RequestBody request: RegisterPreferredCategoryRequest,
-        @RequestAttribute ("memberId") memberId: Long
+        @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<Unit> {
         memberCommandService.registerPreferCategories(memberId, request.categories)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -71,7 +84,7 @@ class MemberController(
     @PostMapping("/prefer-regions")
     fun registerPreferRegions(
         @RequestBody request: RegisterPreferredRegionRequest,
-        @RequestAttribute ("memberId") memberId: Long
+        @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<Unit> {
         memberCommandService.registerPreferRegions(memberId, request.regionCodes)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)

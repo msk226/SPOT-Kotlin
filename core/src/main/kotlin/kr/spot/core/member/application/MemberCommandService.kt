@@ -21,24 +21,31 @@ class MemberCommandService(
     private val preferredCategoryRepository: PreferredCategoryRepository,
     private val preferredRegionRepository: PreferredRegionRepository
 ) {
-
     /**
      * 테스트용 회원 생성
      */
-    fun createTestMember(name: String, email: String): Long {
-        val member = Member.of(
-            id = idGenerator.nextId(),
-            email = Email.of(email),
-            name = name,
-            loginType = LoginType.KAKAO,  // 테스트용 기본값
-            profileImageUrl = null
-        )
+    fun createTestMember(
+        name: String,
+        email: String
+    ): Long {
+        val member =
+            Member.of(
+                id = idGenerator.nextId(),
+                email = Email.of(email),
+                name = name,
+                loginType = LoginType.KAKAO, // 테스트용 기본값
+                profileImageUrl = null
+            )
         return memberRepository.save(member).id
     }
+
     /**
      * 회원 이름 수정
      */
-    fun updateName(memberId: Long, newName: String) {
+    fun updateName(
+        memberId: Long,
+        newName: String
+    ) {
         val member = memberRepository.findByIdOrThrow(memberId)
         member.updateName(newName)
     }
@@ -57,36 +64,44 @@ class MemberCommandService(
     /**
      * 회원 선호 카테고리 등록
      */
-    fun registerPreferCategories(memberId: Long, categories: List<String>) {
+    fun registerPreferCategories(
+        memberId: Long,
+        categories: List<String>
+    ) {
         // 기존 선호 카테고리 삭제
         preferredCategoryRepository.deleteAllByMemberId(memberId)
 
         // 새로운 선호 카테고리 저장
-        val preferredCategories = categories.map { category ->
-            PreferredCategory.of(
-                id = idGenerator.nextId(),
-                memberId = memberId,
-                category = category
-            )
-        }
+        val preferredCategories =
+            categories.map { category ->
+                PreferredCategory.of(
+                    id = idGenerator.nextId(),
+                    memberId = memberId,
+                    category = category
+                )
+            }
         preferredCategoryRepository.saveAll(preferredCategories)
     }
 
     /**
      * 회원 선호 지역 등록
      */
-    fun registerPreferRegions(memberId: Long, regions: List<String>) {
+    fun registerPreferRegions(
+        memberId: Long,
+        regions: List<String>
+    ) {
         // 기존 선호 지역 삭제
         preferredRegionRepository.deleteAllByMemberId(memberId)
 
         // 새로운 선호 지역 저장
-        val preferredRegions = regions.map { region ->
-            PreferredRegion.of(
-                id = idGenerator.nextId(),
-                memberId = memberId,
-                regionCode = region
-            )
-        }
+        val preferredRegions =
+            regions.map { region ->
+                PreferredRegion.of(
+                    id = idGenerator.nextId(),
+                    memberId = memberId,
+                    regionCode = region
+                )
+            }
         preferredRegionRepository.saveAll(preferredRegions)
     }
 }

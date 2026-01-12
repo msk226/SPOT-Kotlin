@@ -9,9 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig(
     private val memberIdInterceptor: MemberIdInterceptor
 ) : WebMvcConfigurer {
-
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(memberIdInterceptor)
+        registry
+            .addInterceptor(memberIdInterceptor)
             .addPathPatterns("/api/**")
             .excludePathPatterns(
                 "/api/health",

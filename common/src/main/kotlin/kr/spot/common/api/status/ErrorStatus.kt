@@ -7,7 +7,6 @@ enum class ErrorStatus(
     override val code: String,
     override val message: String
 ) : BaseCode {
-
     // 공통 에러
     INTERNAL_SERVER_ERROR(500, "COMMON500", "서버 내부 오류 발생"),
     BAD_REQUEST(400, "COMMON4000", "잘못된 요청입니다."),
