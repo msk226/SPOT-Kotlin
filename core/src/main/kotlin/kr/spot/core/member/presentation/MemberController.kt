@@ -6,9 +6,7 @@ import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
 import kr.spot.core.member.application.MemberCommandService
 import kr.spot.core.member.application.MemberQueryService
-import kr.spot.core.member.presentation.dto.request.RegisterPreferredCategoryRequest
-import kr.spot.core.member.presentation.dto.request.RegisterPreferredRegionRequest
-import kr.spot.core.member.presentation.dto.request.UpdateMemberNameRequest
+import kr.spot.core.member.presentation.dto.request.*
 import kr.spot.core.member.presentation.dto.response.*
 import org.springframework.web.bind.annotation.*
 
@@ -24,7 +22,7 @@ class MemberController(
     @Operation(summary = "회원 이름 조회")
     @GetMapping("/name")
     fun getMemberName(
-        @RequestAttribute("memberId") memberId: Long  // TODO: @CurrentMember 어노테이션으로 교체
+        @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<GetMemberNameResponse> {
         val name = memberQueryService.getMemberName(memberId)
         return ApiResponse.ok(GetMemberNameResponse.from(name))
@@ -96,5 +94,16 @@ class MemberController(
     ): ApiResponse<Unit> {
         memberCommandService.withdraw(memberId)
         return ApiResponse.ok()
+    }
+
+    // ==================== Test ====================
+
+    @Operation(summary = "[테스트용] 회원 생성", description = "개발/테스트 환경에서 사용하는 회원 생성 API")
+    @PostMapping("/test")
+    fun createTestMember(
+        @RequestBody request: CreateTestMemberRequest
+    ): ApiResponse<CreateTestMemberResponse> {
+        val memberId = memberCommandService.createTestMember(request.name, request.email)
+        return ApiResponse.created(CreateTestMemberResponse(memberId))
     }
 }

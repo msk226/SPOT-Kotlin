@@ -1,4 +1,4 @@
-package kr.spot.core.shared.infrastructure
+package kr.spot.core.global.infrastructure
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing

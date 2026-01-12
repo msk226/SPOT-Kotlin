@@ -3,7 +3,7 @@ package kr.spot.core.member.domain
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import kr.spot.core.shared.domain.BaseEntity
+import kr.spot.core.global.domain.BaseEntity
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 

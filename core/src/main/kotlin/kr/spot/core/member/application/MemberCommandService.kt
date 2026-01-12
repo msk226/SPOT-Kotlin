@@ -1,10 +1,11 @@
 package kr.spot.core.member.application
 
-import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.common.id.IdGenerator
+import kr.spot.core.member.domain.Member
 import kr.spot.core.member.domain.PreferredCategory
 import kr.spot.core.member.domain.PreferredRegion
+import kr.spot.core.member.domain.enums.LoginType
+import kr.spot.core.member.domain.vo.Email
 import kr.spot.core.member.infrastructure.MemberRepository
 import kr.spot.core.member.infrastructure.PreferredCategoryRepository
 import kr.spot.core.member.infrastructure.PreferredRegionRepository
@@ -19,8 +20,21 @@ class MemberCommandService(
     private val memberRepository: MemberRepository,
     private val preferredCategoryRepository: PreferredCategoryRepository,
     private val preferredRegionRepository: PreferredRegionRepository
-
 ) {
+
+    /**
+     * 테스트용 회원 생성
+     */
+    fun createTestMember(name: String, email: String): Long {
+        val member = Member.of(
+            id = idGenerator.nextId(),
+            email = Email.of(email),
+            name = name,
+            loginType = LoginType.KAKAO,  // 테스트용 기본값
+            profileImageUrl = null
+        )
+        return memberRepository.save(member).id
+    }
     /**
      * 회원 이름 수정
      */

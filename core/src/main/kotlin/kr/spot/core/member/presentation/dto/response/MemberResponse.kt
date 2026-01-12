@@ -52,3 +52,7 @@ data class GetMemberPreferRegionResponse(
         )
     }
 }
+
+data class CreateTestMemberResponse(
+    val memberId: Long
+)

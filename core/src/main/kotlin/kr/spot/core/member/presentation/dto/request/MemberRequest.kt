@@ -11,3 +11,8 @@ data class RegisterPreferredCategoryRequest(
 data class RegisterPreferredRegionRequest(
     val regionCodes: List<String>
 )
+
+data class CreateTestMemberRequest(
+    val name: String,
+    val email: String
+)
