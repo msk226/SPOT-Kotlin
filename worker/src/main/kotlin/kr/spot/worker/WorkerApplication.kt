@@ -1,11 +1,11 @@
-package kr.spot
+package kr.spot.worker
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class SpotKotlinApplication
+class WorkerApplication
 
 fun main(args: Array<String>) {
-    runApplication<SpotKotlinApplication>(*args)
+    runApplication<WorkerApplication>(*args)
 }
