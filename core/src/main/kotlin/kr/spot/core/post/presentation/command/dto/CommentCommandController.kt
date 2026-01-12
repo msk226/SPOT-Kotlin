@@ -49,6 +49,7 @@ class CommentCommandController(
         commentCommandService.updateComment(
             memberId = memberId,
             commentId = commentId,
+            postId = postId,
             content = request.content
         )
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -61,7 +62,7 @@ class CommentCommandController(
         @PathVariable commentId: Long,
         @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<Unit> {
-        commentCommandService.deleteComment(memberId = memberId, commentId = commentId)
+        commentCommandService.deleteComment(memberId = memberId, postId = postId, commentId = commentId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
     }
 }

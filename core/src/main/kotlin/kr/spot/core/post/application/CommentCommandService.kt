@@ -1,7 +1,5 @@
 package kr.spot.core.post.application
 
-import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.common.id.IdGenerator
 import kr.spot.core.member.application.MemberQueryService
 import kr.spot.core.post.domain.Comment
@@ -50,12 +48,12 @@ class CommentCommandService(
      */
     fun updateComment(
         memberId: Long,
+        postId: Long,
         commentId: Long,
         content: String
     ) {
         val comment = commentRepository.getByIdOrThrow(commentId)
-        validateOwner(comment, memberId)
-        comment.update(content)
+        comment.update(content, postId, memberId)
     }
 
     /**
@@ -63,19 +61,10 @@ class CommentCommandService(
      */
     fun deleteComment(
         memberId: Long,
+        postId: Long,
         commentId: Long
     ) {
         val comment = commentRepository.getByIdOrThrow(commentId)
-        validateOwner(comment, memberId)
-        commentRepository.delete(comment)
-    }
-
-    private fun validateOwner(
-        comment: Comment,
-        memberId: Long
-    ) {
-        if (!comment.isOwner(memberId)) {
-            throw GeneralException(ErrorStatus.FORBIDDEN)
-        }
+        comment.delete(postId, memberId)
     }
 }
