@@ -1,6 +1,8 @@
 package kr.spot.core.post.domain.vo
 
 import jakarta.persistence.Embeddable
+import kr.spot.common.api.status.ErrorStatus
+import kr.spot.common.exception.GeneralException
 
 @Embeddable
 class WriterInfo(
@@ -8,6 +10,12 @@ class WriterInfo(
     val writerNickname: String,
     val writerProfileImageUrl: String?
 ) {
+    fun validateIsOwnMember(memberId: Long) {
+        if (writerId != memberId) {
+            throw GeneralException(ErrorStatus.ONLY_AUTHOR_CAN_MODIFY)
+        }
+    }
+
     companion object {
         fun of(
             writerId: Long,

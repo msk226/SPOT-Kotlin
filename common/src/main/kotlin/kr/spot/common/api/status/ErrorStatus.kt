@@ -53,6 +53,7 @@ enum class ErrorStatus(
     POST_NOT_FOUND(404, "POST404", "게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(404, "COMMENT404", "댓글을 찾을 수 없습니다."),
     ONLY_AUTHOR_CAN_MODIFY(403, "POST403", "게시글 및 댓글 수정은 작성자만 가능합니다."),
+    COMMENT_NOT_BELONG_TO_POST(400, "COMMENT4000", "댓글이 해당 게시글에 속하지 않습니다."),
     PRIVATE_POST_ACCESS_DENIED(403, "POST4030", "스터디원 전용 게시글입니다."),
     ALREADY_LIKED(400, "POST4000", "이미 좋아요를 누른 게시글입니다."),
     ALREADY_UNLIKED(400, "POST4001", "좋아요를 누르지 않은 게시글입니다."),

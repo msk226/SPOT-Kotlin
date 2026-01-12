@@ -4,6 +4,8 @@ import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import kr.spot.common.api.status.ErrorStatus
+import kr.spot.common.exception.GeneralException
 import kr.spot.core.global.domain.BaseEntity
 import kr.spot.core.post.domain.vo.WriterInfo
 import org.hibernate.annotations.SQLDelete
@@ -24,11 +26,30 @@ class Comment private constructor(
     var content: String = content
         private set
 
-    fun update(content: String) {
+    fun update(
+        content: String,
+        postId: Long,
+        memberId: Long
+    ) {
+        writerInfo.validateIsOwnMember(memberId)
+        validateIsSamePost(postId)
         this.content = content
     }
 
-    fun isOwner(memberId: Long): Boolean = writerInfo.writerId == memberId
+    fun delete(
+        postId: Long,
+        memberId: Long
+    ) {
+        writerInfo.validateIsOwnMember(memberId)
+        validateIsSamePost(postId)
+        super.delete()
+    }
+
+    private fun validateIsSamePost(postId: Long) {
+        if (this.postId != postId) {
+            throw GeneralException(ErrorStatus.COMMENT_NOT_BELONG_TO_POST)
+        }
+    }
 
     companion object {
         fun of(
