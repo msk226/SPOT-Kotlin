@@ -2,11 +2,9 @@ package kr.spot.common.id
 
 import kotlin.random.Random
 
-
 class Snowflake(
     private val nodeId: Long = Random.nextLong(MAX_NODE_ID + 1)
 ) : IdGenerator {
-
     private var lastTimeMillis: Long = START_TIME_MILLIS
     private var sequence: Long = 0L
 
@@ -36,8 +34,8 @@ class Snowflake(
         lastTimeMillis = currentTimeMillis
 
         return ((currentTimeMillis - START_TIME_MILLIS) shl (NODE_ID_BITS + SEQUENCE_BITS)) or
-                (nodeId shl SEQUENCE_BITS) or
-                sequence
+            (nodeId shl SEQUENCE_BITS) or
+            sequence
     }
 
     private fun waitNextMillis(currentTimestamp: Long): Long {

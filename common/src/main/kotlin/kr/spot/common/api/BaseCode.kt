@@ -6,10 +6,11 @@ interface BaseCode {
     val message: String
     val isSuccess: Boolean
 
-    fun toReasonDto(): ReasonDto = ReasonDto(
-        isSuccess = isSuccess,
-        code = code,
-        message = message,
-        httpStatus = httpStatus
-    )
+    fun toReasonDto(): ReasonDto =
+        ReasonDto(
+            isSuccess = isSuccess,
+            code = code,
+            message = message,
+            httpStatus = httpStatus
+        )
 }
