@@ -4,6 +4,9 @@ dependencies {
     // Spring 기본
     implementation("org.springframework.boot:spring-boot-starter")
 
+    // Spring Web (for MultipartFile)
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 }

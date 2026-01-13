@@ -1,6 +1,7 @@
 plugins {
     id("org.springframework.boot")
     kotlin("plugin.jpa")
+    kotlin("kapt")
 }
 
 dependencies {
@@ -11,9 +12,6 @@ dependencies {
 
     // Spring Data JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
-    // Spring Security
-    implementation("org.springframework.boot:spring-boot-starter-security")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
@@ -28,16 +26,9 @@ dependencies {
 
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-    annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
-    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
-
-    // AWS S3
-    implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0")
-
-    // QR Code
-    implementation("com.google.zxing:core:3.5.2")
-    implementation("com.google.zxing:javase:3.5.2")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 
     // OpenAPI (Swagger)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
