@@ -4,7 +4,6 @@ import kr.spot.common.api.status.ErrorStatus
 import kr.spot.common.exception.GeneralException
 import kr.spot.common.id.IdGenerator
 import kr.spot.study.core.application.validator.StudyAccessValidator
-import kr.spot.study.review.domain.Review
 import kr.spot.study.review.domain.associations.ReviewReaction
 import kr.spot.study.review.domain.enums.Reaction
 import kr.spot.study.review.infrastructure.jpa.ReviewReactionRepository

@@ -42,7 +42,6 @@ class ManageScheduleService(
         schedule.delete(studyId)
     }
 
-
     private fun getById(scheduleId: Long): Schedule =
         scheduleRepository.findById(scheduleId).orElseThrow { GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND) }
 }

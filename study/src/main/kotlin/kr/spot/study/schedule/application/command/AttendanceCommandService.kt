@@ -106,9 +106,8 @@ class AttendanceCommandService(
         attendanceRepository.saveAll(attendances)
     }
 
-
     private fun getById(scheduleId: Long): Schedule =
-       scheduleRepository.findById(scheduleId).orElseThrow { GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND) }
+        scheduleRepository.findById(scheduleId).orElseThrow { GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND) }
 
     companion object {
         private val ACTIVE_MEMBER_STATUSES = listOf(StudyMemberStatus.OWNER, StudyMemberStatus.APPROVED)

@@ -5,12 +5,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class FakeGetWriterInfoPort : GetWriterInfoPort {
-
-    override fun get(memberId: Long): WriterInfoResponse {
-        return WriterInfoResponse.of(
+    override fun get(memberId: Long): WriterInfoResponse =
+        WriterInfoResponse.of(
             writerId = memberId,
             nickname = "Writer$memberId",
             profileImageUrl = "https://example.com/writers/$memberId.png"
         )
-    }
 }

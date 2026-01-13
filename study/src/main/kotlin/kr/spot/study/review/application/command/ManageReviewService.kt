@@ -12,7 +12,6 @@ import kr.spot.study.review.infrastructure.jpa.ReviewRepository
 import kr.spot.study.review.presentation.command.dto.CreateReviewRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile
 
 @Service
 @Transactional
@@ -26,7 +25,6 @@ class ManageReviewService(
         studyId: Long,
         memberId: Long,
         request: CreateReviewRequest,
-        imageFile: MultipartFile?
     ): Long {
         studyAccessValidator.validateStudyMember(studyId, memberId)
 
@@ -56,7 +54,6 @@ class ManageReviewService(
         val response = getWriterInfoPort.get(memberId)
         return WriterInfo.of(response.writerId, response.nickname, response.profileImageUrl)
     }
-
 
     fun getByIdOrThrow(reviewId: Long): Review =
         reviewRepository.findById(reviewId).orElseThrow { GeneralException(ErrorStatus.REVIEW_NOT_FOUND) }

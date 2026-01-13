@@ -59,7 +59,6 @@ class GetAttendanceService(
         return GetAttendanceListResponse.from(attendanceInfos, attendanceInfos.size)
     }
 
-
     private fun getById(scheduleId: Long): Schedule =
         scheduleRepository.findById(scheduleId).orElseThrow { GeneralException(ErrorStatus.SCHEDULE_NOT_FOUND) }
 }

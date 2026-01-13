@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 
 @Tag(name = "스터디 회고록")
 @RestController
@@ -32,10 +31,9 @@ class ReviewCommandController(
     fun createReview(
         @PathVariable studyId: Long,
         @RequestHeader("X-Member-Id") memberId: Long,
-        @RequestPart request: CreateReviewRequest,
-        @RequestPart(required = false) imageFile: MultipartFile?
+        @RequestPart request: CreateReviewRequest
     ): ResponseEntity<ApiResponse<CreateReviewResponse>> {
-        val reviewId = manageReviewService.createReview(studyId, memberId, request, imageFile)
+        val reviewId = manageReviewService.createReview(studyId, memberId, request)
         return ResponseEntity.ok(
             ApiResponse.created(CreateReviewResponse.from(reviewId))
         )
