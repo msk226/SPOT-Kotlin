@@ -139,7 +139,7 @@ formatting:
   NoUnusedImports:
     active: true
   NoWildcardImports:
-    active: true
+    active: false
   ParameterListWrapping:
     active: true
   SpacingAroundColon:
@@ -408,4 +408,4 @@ style:
   VarCouldBeVal:
     active: true
   WildcardImport:
-    active: true
+    active: false

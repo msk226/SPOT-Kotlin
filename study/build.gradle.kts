@@ -1,6 +1,7 @@
 plugins {
     id("org.springframework.boot")
     kotlin("plugin.jpa")
+    kotlin("kapt")
 }
 
 dependencies {
@@ -28,9 +29,9 @@ dependencies {
 
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-    annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
-    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 
     // AWS S3
     implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0")
