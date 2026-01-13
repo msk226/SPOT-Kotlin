@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.study.core.application.query.GetStudyDetailService
 import kr.spot.study.core.presentation.query.dto.response.GetStudyInfoResponse
-import kr.spot.study.core.presentation.query.dto.response.GetStudyMembersResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,20 +31,6 @@ class StudyQueryController(
         ResponseEntity.ok(
             ApiResponse.ok(
                 getStudyDetailService.getStudyInfo(studyId, viewerId)
-            )
-        )
-
-    @Operation(
-        summary = "스터디 멤버 조회",
-        description = "스터디의 멤버들을 조회합니다."
-    )
-    @GetMapping("/members")
-    fun getStudyMembers(
-        @PathVariable studyId: Long
-    ): ResponseEntity<ApiResponse<GetStudyMembersResponse>> =
-        ResponseEntity.ok(
-            ApiResponse.ok(
-                getStudyDetailService.getStudyMembers(studyId)
             )
         )
 }

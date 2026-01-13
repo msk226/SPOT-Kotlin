@@ -3,11 +3,11 @@ package kr.spot.study.core.domain
 import jakarta.persistence.*
 import kr.spot.common.api.status.ErrorStatus
 import kr.spot.common.exception.GeneralException
-import kr.spot.global.domain.BaseEntity
 import kr.spot.study.core.domain.enums.Decision
 import kr.spot.study.core.domain.enums.RecruitingStatus
 import kr.spot.study.core.domain.enums.StudyMemberStatus
 import kr.spot.study.core.domain.vo.Fee
+import kr.spot.study.global.domain.BaseEntity
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 

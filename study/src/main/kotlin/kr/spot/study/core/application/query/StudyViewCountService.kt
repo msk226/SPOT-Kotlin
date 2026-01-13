@@ -1,9 +1,9 @@
 package kr.spot.study.core.application.query
 
-import kr.spot.study.core.domain.Study
 import kr.spot.common.view.ViewAbuseGuard
 import kr.spot.common.view.ViewCounter
 import kr.spot.common.view.ViewableType
+import kr.spot.study.core.domain.Study
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

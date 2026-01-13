@@ -1,6 +1,6 @@
-package kr.spot.global.infrastructure
+package kr.spot.study.global.infrastructure
 
-import kr.spot.global.interceptor.MemberIdInterceptor
+import kr.spot.study.global.interceptor.MemberIdInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer

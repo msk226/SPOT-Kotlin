@@ -1,4 +1,4 @@
-package kr.spot.global.domain.enums
+package kr.spot.study.global.domain.enums
 
 enum class Status {
     ACTIVE,

@@ -1,4 +1,4 @@
-package kr.spot.global.interceptor
+package kr.spot.study.global.interceptor
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

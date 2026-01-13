@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/spot_study
     username: root
-    password: ${DB_PASSWORD}
+    password: 5167
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -24,4 +24,3 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: ${REDIS_PASSWORD}

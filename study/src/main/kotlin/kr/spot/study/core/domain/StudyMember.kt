@@ -7,9 +7,9 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import kr.spot.common.api.status.ErrorStatus
 import kr.spot.common.exception.GeneralException
-import kr.spot.global.domain.BaseEntity
 import kr.spot.study.core.domain.enums.Decision
 import kr.spot.study.core.domain.enums.StudyMemberStatus
+import kr.spot.study.global.domain.BaseEntity
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 

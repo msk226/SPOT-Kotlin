@@ -54,7 +54,7 @@ class StudyViewFlushJob(
 
         redis.execute { connection ->
             try {
-                connection.scan(options).use { cursor ->
+                connection.keyCommands().scan(options).use { cursor ->
                     while (cursor.hasNext()) {
                         val keyBytes = cursor.next()
                         processKey(keyBytes, result)

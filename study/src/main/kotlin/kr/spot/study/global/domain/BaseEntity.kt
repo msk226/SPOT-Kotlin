@@ -1,10 +1,10 @@
-package kr.spot.global.domain
+package kr.spot.study.global.domain
 
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.MappedSuperclass
-import kr.spot.global.domain.enums.Status
+import kr.spot.study.global.domain.enums.Status
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener

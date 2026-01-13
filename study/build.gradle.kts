@@ -13,9 +13,6 @@ dependencies {
     // Spring Data JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // Spring Security
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
@@ -32,9 +29,6 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-
-    // AWS S3
-    implementation("io.awspring.cloud:spring-cloud-aws-starter-s3:3.1.0")
 
     // QR Code
     implementation("com.google.zxing:core:3.5.2")
