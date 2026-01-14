@@ -15,6 +15,7 @@ import kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberNameResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberPreferCategoryResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberPreferRegionResponse
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "회원")
@@ -29,7 +30,7 @@ class MemberController(
     @Operation(summary = "회원 이름 조회")
     @GetMapping("/name")
     fun getMemberName(
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<GetMemberNameResponse> {
         val name = memberQueryService.getMemberName(memberId)
         return ApiResponse.ok(GetMemberNameResponse.from(name))
@@ -38,7 +39,7 @@ class MemberController(
     @Operation(summary = "회원 정보 조회")
     @GetMapping("/info")
     fun getMemberInfo(
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<GetMemberInfoResponse> {
         val member = memberQueryService.getMember(memberId)
         return ApiResponse.ok(GetMemberInfoResponse.from(member))

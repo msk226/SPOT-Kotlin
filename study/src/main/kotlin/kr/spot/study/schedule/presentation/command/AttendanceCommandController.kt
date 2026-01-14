@@ -26,7 +26,7 @@ class AttendanceCommandController(
     fun startAttendanceCheck(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<StartAttendanceResponse>> {
         val attendanceCode = attendanceCommandService.startAttendance(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok(StartAttendanceResponse(attendanceCode)))
@@ -37,7 +37,7 @@ class AttendanceCommandController(
     fun stopAttendanceCheck(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         attendanceCommandService.stopAttendance(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
@@ -50,7 +50,7 @@ class AttendanceCommandController(
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
         @Parameter(description = "6자리 출석 코드", required = true)
         @RequestParam code: String,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         attendanceCommandService.checkAttendance(studyId, scheduleId, code, memberId)
         return ResponseEntity.ok(ApiResponse.ok())

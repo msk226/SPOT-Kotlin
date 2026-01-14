@@ -29,7 +29,7 @@ class ReviewQueryController(
     @GetMapping
     fun getReviewList(
         @PathVariable studyId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestParam(required = false) cursor: Long?,
         @Parameter(description = "페이지 크기 (1~50)")
         @RequestParam(defaultValue = "10")

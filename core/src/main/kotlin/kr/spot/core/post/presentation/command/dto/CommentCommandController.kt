@@ -1,6 +1,7 @@
 package kr.spot.core.post.presentation.command.dto
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
@@ -20,7 +21,7 @@ class CommentCommandController(
     fun createComment(
         @RequestBody request: ManageCommentRequest,
         @PathVariable postId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<CreateCommentResponse> {
         val commentId =
             commentCommandService.createComment(
@@ -37,7 +38,7 @@ class CommentCommandController(
         @RequestBody request: ManageCommentRequest,
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         commentCommandService.updateComment(
             memberId = memberId,
@@ -53,7 +54,7 @@ class CommentCommandController(
     fun deleteComment(
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         commentCommandService.deleteComment(memberId = memberId, postId = postId, commentId = commentId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)

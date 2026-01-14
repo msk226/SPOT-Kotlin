@@ -29,7 +29,7 @@ class StudyCommandController(
     @PostMapping
     fun createStudy(
         @RequestBody request: CreateStudyRequest,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<CreateStudyResponse>> {
         val studyId = createStudyService.createStudy(request, memberId)
         return ResponseEntity.ok(
@@ -41,7 +41,7 @@ class StudyCommandController(
     @PostMapping("/{studyId}/like")
     fun likeStudy(
         @PathVariable studyId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         studyLikeService.likeStudy(studyId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
@@ -51,7 +51,7 @@ class StudyCommandController(
     @DeleteMapping("/{studyId}/like")
     fun unlikeStudy(
         @PathVariable studyId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         studyLikeService.unlikeStudy(studyId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())

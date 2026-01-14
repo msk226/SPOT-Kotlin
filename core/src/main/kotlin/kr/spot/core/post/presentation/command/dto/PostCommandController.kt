@@ -1,6 +1,7 @@
 package kr.spot.core.post.presentation.command.dto
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
@@ -19,7 +20,7 @@ class PostCommandController(
     @PostMapping
     fun createPost(
         @RequestBody request: ManagePostRequest,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<CreatePostResponse> {
         val postId =
             postCommandService.createPost(
@@ -36,7 +37,7 @@ class PostCommandController(
     fun updatePost(
         @RequestBody request: ManagePostRequest,
         @PathVariable postId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.updatePost(
             memberId = memberId,
@@ -52,7 +53,7 @@ class PostCommandController(
     @DeleteMapping("/{postId}")
     fun deletePost(
         @PathVariable postId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.deletePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -62,7 +63,7 @@ class PostCommandController(
     @PostMapping("/{postId}/like")
     fun likePost(
         @PathVariable postId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.likePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -72,7 +73,7 @@ class PostCommandController(
     @DeleteMapping("/{postId}/like")
     fun unlikePost(
         @PathVariable postId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.unlikePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)

@@ -26,7 +26,7 @@ class StudyApplyCommandController(
     @PostMapping("/{studyId}/apply")
     fun applyStudy(
         @PathVariable studyId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestBody request: ApplyStudyRequest
     ): ResponseEntity<ApiResponse<Unit>> {
         applyStudyService.applyStudy(studyId, memberId, request)
@@ -37,7 +37,7 @@ class StudyApplyCommandController(
     @PostMapping("/applications/{applicationId}")
     fun approveStudyApplication(
         @PathVariable applicationId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestParam decision: Decision
     ): ResponseEntity<ApiResponse<Unit>> {
         applyStudyService.processStudyApplication(applicationId, memberId, decision)

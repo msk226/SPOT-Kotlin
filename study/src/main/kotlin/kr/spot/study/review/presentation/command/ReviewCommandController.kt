@@ -1,6 +1,7 @@
 package kr.spot.study.review.presentation.command
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
@@ -30,7 +31,7 @@ class ReviewCommandController(
     @PostMapping
     fun createReview(
         @PathVariable studyId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestPart request: CreateReviewRequest
     ): ResponseEntity<ApiResponse<CreateReviewResponse>> {
         val reviewId = manageReviewService.createReview(studyId, memberId, request)
@@ -44,7 +45,7 @@ class ReviewCommandController(
     fun deleteReview(
         @PathVariable studyId: Long,
         @PathVariable reviewId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         manageReviewService.deleteReview(studyId, reviewId, memberId)
         return ResponseEntity.ok(ApiResponse.success(SuccessStatus.NO_CONTENT))
@@ -55,7 +56,7 @@ class ReviewCommandController(
     fun addReaction(
         @PathVariable studyId: Long,
         @PathVariable reviewId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestParam reaction: Reaction
     ): ResponseEntity<ApiResponse<Unit>> {
         manageReviewReactionService.addReaction(studyId, reviewId, memberId, reaction)
@@ -67,7 +68,7 @@ class ReviewCommandController(
     fun removeReaction(
         @PathVariable studyId: Long,
         @PathVariable reviewId: Long,
-        @RequestHeader memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestParam reaction: Reaction
     ): ResponseEntity<ApiResponse<Unit>> {
         manageReviewReactionService.removeReaction(studyId, reviewId, memberId, reaction)

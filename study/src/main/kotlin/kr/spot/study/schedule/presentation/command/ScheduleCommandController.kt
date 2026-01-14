@@ -27,7 +27,7 @@ class ScheduleCommandController(
     fun createSchedule(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @RequestBody request: CreateScheduleRequest,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<CreateScheduleResponse>> {
         val scheduleId = manageScheduleService.createSchedule(request, studyId, memberId)
         return ResponseEntity.ok(
@@ -40,7 +40,7 @@ class ScheduleCommandController(
     fun deleteSchedule(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         manageScheduleService.deleteSchedule(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
