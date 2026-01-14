@@ -1,6 +1,7 @@
 package kr.spot.core.member.presentation
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
@@ -8,14 +9,9 @@ import kr.spot.core.member.application.MemberCommandService
 import kr.spot.core.member.application.MemberQueryService
 import kr.spot.core.member.presentation.dto.request.CreateTestMemberRequest
 import kr.spot.core.member.presentation.dto.request.RegisterPreferredCategoryRequest
-import kr.spot.core.member.presentation.dto.request.RegisterPreferredRegionRequest
-import kr.spot.core.member.presentation.dto.request.UpdateMemberNameRequest
 import kr.spot.core.member.presentation.dto.response.CreateTestMemberResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberNameResponse
-import kr.spot.core.member.presentation.dto.response.GetMemberPreferCategoryResponse
-import kr.spot.core.member.presentation.dto.response.GetMemberPreferRegionResponse
-import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "회원")
@@ -44,7 +40,6 @@ class MemberController(
         val member = memberQueryService.getMember(memberId)
         return ApiResponse.ok(GetMemberInfoResponse.from(member))
     }
-
 
     // ==================== Command ====================
 

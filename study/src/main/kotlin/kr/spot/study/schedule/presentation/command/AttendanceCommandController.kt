@@ -56,4 +56,3 @@ class AttendanceCommandController(
         return ResponseEntity.ok(ApiResponse.ok())
     }
 }
-

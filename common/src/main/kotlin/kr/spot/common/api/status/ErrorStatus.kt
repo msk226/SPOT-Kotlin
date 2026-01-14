@@ -88,6 +88,7 @@ enum class ErrorStatus(
 
     // 알림 관련
     NOTIFICATION_NOT_FOUND(404, "NOTIFICATION404", "알림을 찾을 수 없습니다."),
+    NOTIFICATION_ACCESS_DENIED(403, "NOTIFICATION403", "해당 알림에 접근할 권한이 없습니다."),
     INVALID_NOTIFICATION_TYPE(400, "NOTIFICATION4000", "유효하지 않은 알림 유형입니다."),
     NOTIFICATION_PAYLOAD_MISSING_MEMBER_ID(400, "NOTIFICATION4001", "알림 페이로드에 memberId가 필요합니다."),
     NOTIFICATION_PAYLOAD_MISSING_STUDY_ID(400, "NOTIFICATION4002", "알림 페이로드에 studyId가 필요합니다."),

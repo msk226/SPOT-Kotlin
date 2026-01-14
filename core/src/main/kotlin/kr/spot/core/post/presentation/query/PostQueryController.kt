@@ -1,16 +1,15 @@
 package kr.spot.core.post.presentation.query
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.core.post.application.PostQueryService
 import kr.spot.core.post.domain.enums.PostType
 import kr.spot.core.post.presentation.query.dto.response.PostDetailResponse
 import kr.spot.core.post.presentation.query.dto.response.PostListResponse
-import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam

@@ -1,7 +1,6 @@
 package kr.spot.study.todo.presentation.query
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.study.todo.application.query.GetTodoService
