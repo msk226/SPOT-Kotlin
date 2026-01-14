@@ -33,7 +33,7 @@ class StudySearchController(
     )
     @GetMapping("/recruiting")
     fun getRecruitingStudies(
-        @RequestHeader("X-Member-Id") @Parameter(hidden = true) viewerId: Long,
+        @RequestHeader viewerId: Long,
         @RequestParam(required = false) feeCategory: FeeCategory?,
         @RequestParam(required = false) categories: List<Category>?,
         @RequestParam(required = false) isOnline: Boolean?,

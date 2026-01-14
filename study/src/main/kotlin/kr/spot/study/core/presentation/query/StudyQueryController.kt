@@ -26,7 +26,7 @@ class StudyQueryController(
     @GetMapping("/info")
     fun getStudyInfo(
         @PathVariable studyId: Long,
-        @RequestHeader("X-Member-Id") @Parameter(hidden = true) viewerId: Long
+        @RequestHeader viewerId: Long
     ): ResponseEntity<ApiResponse<GetStudyInfoResponse>> =
         ResponseEntity.ok(
             ApiResponse.ok(

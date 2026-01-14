@@ -10,7 +10,5 @@ data class CreateStudyRequest(
     val amount: Int?,
     val description: String,
     val isOnline: Boolean?,
-    val categories: Set<Category>,
-    val styles: Set<Style>,
-    val regionCodes: Set<String>
+    val categories: Set<Category>
 )

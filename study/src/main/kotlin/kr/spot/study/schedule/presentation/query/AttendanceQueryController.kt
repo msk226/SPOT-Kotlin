@@ -25,7 +25,7 @@ class AttendanceQueryController(
     fun getAttendanceList(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<GetAttendanceListResponse>> {
         val response = getAttendanceService.getAttendanceList(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok(response))
@@ -36,7 +36,7 @@ class AttendanceQueryController(
     fun getAttendanceInfo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<GetAttendanceInfoResponse>> {
         val response = getAttendanceService.getAttendanceInfo(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok(response))

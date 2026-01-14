@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.study.schedule.application.command.AttendanceCommandService
+import kr.spot.study.schedule.presentation.command.dto.StartAttendanceResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,7 +26,7 @@ class AttendanceCommandController(
     fun startAttendanceCheck(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<StartAttendanceResponse>> {
         val attendanceCode = attendanceCommandService.startAttendance(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok(StartAttendanceResponse(attendanceCode)))
@@ -36,7 +37,7 @@ class AttendanceCommandController(
     fun stopAttendanceCheck(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         attendanceCommandService.stopAttendance(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
@@ -49,13 +50,10 @@ class AttendanceCommandController(
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
         @Parameter(description = "6자리 출석 코드", required = true)
         @RequestParam code: String,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         attendanceCommandService.checkAttendance(studyId, scheduleId, code, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
     }
 }
 
-data class StartAttendanceResponse(
-    val attendanceCode: String
-)

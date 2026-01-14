@@ -31,7 +31,7 @@ class StudyApplyQueryController(
     )
     @GetMapping("/applied")
     fun getMyAppliedStudies(
-        @Parameter(hidden = true) @RequestHeader("X-Member-Id") memberId: Long
+        @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<GetMyAppliedStudyResponse>> =
         ResponseEntity.ok(
             ApiResponse.ok(
