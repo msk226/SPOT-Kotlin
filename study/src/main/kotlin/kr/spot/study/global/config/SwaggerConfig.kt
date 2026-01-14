@@ -18,8 +18,7 @@ class SwaggerConfig {
                     .title("SPOT Study API")
                     .description("스터디 관리 서비스 API")
                     .version("1.0.0")
-            )
-            .components(
+            ).components(
                 Components()
                     .addSecuritySchemes(
                         "memberId",
@@ -29,6 +28,5 @@ class SwaggerConfig {
                             .name("memberId")
                             .description("회원 ID")
                     )
-            )
-            .addSecurityItem(SecurityRequirement().addList("memberId"))
+            ).addSecurityItem(SecurityRequirement().addList("memberId"))
 }

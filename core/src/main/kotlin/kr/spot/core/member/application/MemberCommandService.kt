@@ -1,7 +1,5 @@
 package kr.spot.core.member.application
 
-import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.common.id.IdGenerator
 import kr.spot.core.member.domain.Member
 import kr.spot.core.member.domain.PreferredCategory
@@ -36,7 +34,6 @@ class MemberCommandService(
             )
         return memberRepository.save(member).id
     }
-
 
     /**
      * 회원 탈퇴

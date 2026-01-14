@@ -82,15 +82,16 @@ class AttendanceCommandService(
         attendance.markAttendance(AttendanceStatus.PRESENT)
     }
 
-    private fun validateAttendanceCode(schedule: Schedule, code: String) {
+    private fun validateAttendanceCode(
+        schedule: Schedule,
+        code: String
+    ) {
         if (schedule.attendanceCode != code) {
             throw GeneralException(ErrorStatus.INVALID_ATTENDANCE_CODE)
         }
     }
 
-    private fun generateAttendanceCode(): String {
-        return (100000..999999).random().toString()
-    }
+    private fun generateAttendanceCode(): String = (100000..999999).random().toString()
 
     private fun createAttendancesForAllMembers(
         studyId: Long,

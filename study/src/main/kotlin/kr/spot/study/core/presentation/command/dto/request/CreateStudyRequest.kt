@@ -1,7 +1,6 @@
 package kr.spot.study.core.presentation.command.dto.request
 
 import kr.spot.study.core.domain.enums.Category
-import kr.spot.study.core.domain.enums.Style
 
 data class CreateStudyRequest(
     val name: String,

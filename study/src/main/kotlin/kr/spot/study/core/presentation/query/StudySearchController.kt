@@ -1,7 +1,6 @@
 package kr.spot.study.core.presentation.query
 
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -10,7 +9,6 @@ import kr.spot.study.core.application.query.GetMyStudyInfoService
 import kr.spot.study.core.domain.enums.Category
 import kr.spot.study.core.domain.enums.FeeCategory
 import kr.spot.study.core.domain.enums.SortBy
-import kr.spot.study.core.domain.enums.StudyMemberStatus
 import kr.spot.study.core.presentation.query.dto.response.GetStudyOverviewResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController
 class StudySearchController(
     private val getMyStudyInfoService: GetMyStudyInfoService
 ) {
-
     @Operation(
         summary = "모집 중 스터디 조회",
         description = "모집 중인 스터디를 조회합니다. 카테고리, 정렬 방식 등을 필터링할 수 있습니다."

@@ -5,14 +5,12 @@ import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions.selectOne
 import com.querydsl.jpa.impl.JPAQueryFactory
 import kr.spot.study.core.domain.QStudy
-import kr.spot.study.core.domain.QStudyMember
 import kr.spot.study.core.domain.Study
 import kr.spot.study.core.domain.association.QStudyCategory
 import kr.spot.study.core.domain.enums.Category
 import kr.spot.study.core.domain.enums.FeeCategory
 import kr.spot.study.core.domain.enums.RecruitingStatus
 import kr.spot.study.core.domain.enums.SortBy
-import kr.spot.study.core.domain.enums.StudyMemberStatus
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Repository
 class StudyQueryRepository(
     private val query: JPAQueryFactory
 ) {
-    
     @Suppress("LongParameterList")
     fun findRecruitingStudies(
         feeCategory: FeeCategory?,

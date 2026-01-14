@@ -5,7 +5,6 @@ import kr.spot.study.core.domain.Study
 import kr.spot.study.core.domain.enums.Category
 import kr.spot.study.core.domain.enums.FeeCategory
 import kr.spot.study.core.domain.enums.SortBy
-import kr.spot.study.core.domain.enums.StudyMemberStatus
 import kr.spot.study.core.infrastructure.jpa.StudyLikeRepository
 import kr.spot.study.core.infrastructure.jpa.querydsl.StudyQueryRepository
 import kr.spot.study.core.presentation.query.dto.response.GetStudyOverviewResponse
