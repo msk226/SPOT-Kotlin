@@ -86,12 +86,6 @@ class Study private constructor(
         message: String
     ): StudyMember = StudyMember.apply(id, this.id, memberId, message)
 
-    fun updateImageUrl(imageUrl: String?) {
-        if (imageUrl != null) {
-            this.imageUrl = imageUrl
-        }
-    }
-
     companion object {
         private const val CURRENT_MEMBERS = 1
 

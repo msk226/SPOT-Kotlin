@@ -28,7 +28,7 @@ class TodoCommandController(
     @PostMapping
     fun createTodo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestBody request: CreateTodoRequest
     ): ResponseEntity<ApiResponse<CreateTodoResponse>> {
         val todoId = manageTodoService.createTodo(studyId, memberId, request)
@@ -42,7 +42,7 @@ class TodoCommandController(
     fun updateTodo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "투두 ID", required = true) @PathVariable todoId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long,
         @RequestBody request: UpdateTodoRequest
     ): ResponseEntity<ApiResponse<Unit>> {
         manageTodoService.updateTodo(studyId, todoId, memberId, request)
@@ -54,7 +54,7 @@ class TodoCommandController(
     fun completeTodo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "투두 ID", required = true) @PathVariable todoId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         manageTodoService.completeTodo(studyId, todoId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
@@ -65,7 +65,7 @@ class TodoCommandController(
     fun uncompleteTodo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "투두 ID", required = true) @PathVariable todoId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         manageTodoService.uncompleteTodo(studyId, todoId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
@@ -76,7 +76,7 @@ class TodoCommandController(
     fun deleteTodo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "투두 ID", required = true) @PathVariable todoId: Long,
-        @RequestHeader("X-Member-Id") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
         manageTodoService.deleteTodo(studyId, todoId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())

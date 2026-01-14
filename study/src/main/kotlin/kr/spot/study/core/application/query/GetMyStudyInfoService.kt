@@ -23,18 +23,6 @@ class GetMyStudyInfoService(
         const val MAX_PAGE_SIZE = 50
     }
 
-    fun getMyStudyOverview(
-        viewerId: Long,
-        statuses: List<StudyMemberStatus>,
-        cursor: Long?,
-        size: Int
-    ): GetStudyOverviewResponse {
-        val pageSize = minOf(size, MAX_PAGE_SIZE)
-        val rows = studyQueryRepository.findMyStudies(viewerId, statuses, cursor, pageSize + 1)
-        val totalElements = studyQueryRepository.countMyStudies(viewerId, statuses)
-        return toCursorPage(rows, viewerId, pageSize, totalElements)
-    }
-
     @Suppress("LongParameterList")
     fun getRecruitingStudies(
         viewerId: Long,

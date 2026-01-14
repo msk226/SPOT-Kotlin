@@ -30,13 +30,18 @@ class AttendanceCommandService(
         studyId: Long,
         scheduleId: Long,
         memberId: Long
-    ) {
+    ): String {
         studyAccessValidator.validateStudyLeader(studyId, memberId)
 
         val schedule = getById(scheduleId)
         schedule.startAttendance(studyId)
 
+        val attendanceCode = generateAttendanceCode()
+        schedule.updateAttendanceCode(attendanceCode)
+
         createAttendancesForAllMembers(studyId, scheduleId)
+
+        return attendanceCode
     }
 
     fun stopAttendance(
@@ -57,24 +62,35 @@ class AttendanceCommandService(
         attendances.forEach { it.markAbsentIfUndecided() }
     }
 
-//    fun checkAttendance(
-//        encryptedToken: String,
-//        memberId: Long
-//    ) {
-//        val tokenData =
-//
-//        studyAccessValidator.validateStudyMember(tokenData.studyId, memberId)
-//
-//        val schedule = scheduleRepository.getByIdOrThrow(tokenData.scheduleId)
-//        schedule.validateAttendanceCheckable()
-//
-//        val attendance =
-//            attendanceRepository
-//                .findByScheduleIdAndMemberInfoMemberId(tokenData.scheduleId, memberId)
-//                .orElseThrow { GeneralException(ErrorStatus.STUDY_MEMBER_NOT_FOUND) }
-//
-//        attendance.markAttendance(AttendanceStatus.PRESENT)
-//    }
+    fun checkAttendance(
+        studyId: Long,
+        scheduleId: Long,
+        code: String,
+        memberId: Long
+    ) {
+        studyAccessValidator.validateStudyMember(studyId, memberId)
+
+        val schedule = getById(scheduleId)
+        schedule.validateAttendanceCheckable()
+        validateAttendanceCode(schedule, code)
+
+        val attendance =
+            attendanceRepository
+                .findByScheduleIdAndMemberInfoMemberId(scheduleId, memberId)
+                .orElseThrow { GeneralException(ErrorStatus.ATTENDANCE_NOT_FOUND) }
+
+        attendance.markAttendance(AttendanceStatus.PRESENT)
+    }
+
+    private fun validateAttendanceCode(schedule: Schedule, code: String) {
+        if (schedule.attendanceCode != code) {
+            throw GeneralException(ErrorStatus.INVALID_ATTENDANCE_CODE)
+        }
+    }
+
+    private fun generateAttendanceCode(): String {
+        return (100000..999999).random().toString()
+    }
 
     private fun createAttendancesForAllMembers(
         studyId: Long,

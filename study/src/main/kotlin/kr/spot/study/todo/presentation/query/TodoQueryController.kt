@@ -27,11 +27,9 @@ class TodoQueryController(
     )
     @GetMapping("/members/{memberId}")
     fun getTodosByDate(
-        @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
+        @PathVariable studyId: Long,
         @PathVariable memberId: Long,
-        @Parameter(description = "조회할 날짜 (ISO 8601 표준)", example = "2025-01-15")
-        @RequestParam
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate
     ): ResponseEntity<ApiResponse<GetTodoListResponse>> {
         val response = getTodoService.getTodosByDate(studyId, memberId, date)
         return ResponseEntity.ok(ApiResponse.ok(response))

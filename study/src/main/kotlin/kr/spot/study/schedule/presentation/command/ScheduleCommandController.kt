@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -25,9 +26,10 @@ class ScheduleCommandController(
     @PostMapping
     fun createSchedule(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
-        @RequestBody request: CreateScheduleRequest
+        @RequestBody request: CreateScheduleRequest,
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<CreateScheduleResponse>> {
-        val scheduleId = manageScheduleService.createSchedule(request, studyId)
+        val scheduleId = manageScheduleService.createSchedule(request, studyId, memberId)
         return ResponseEntity.ok(
             ApiResponse.created(CreateScheduleResponse.from(scheduleId))
         )
@@ -37,9 +39,10 @@ class ScheduleCommandController(
     @DeleteMapping("/{scheduleId}")
     fun deleteSchedule(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
-        @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long
+        @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
-        manageScheduleService.deleteSchedule(studyId, scheduleId)
+        manageScheduleService.deleteSchedule(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
     }
 }

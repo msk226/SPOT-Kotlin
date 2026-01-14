@@ -1,20 +1,14 @@
 package kr.spot.core.post.presentation.command.dto
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.common.api.status.SuccessStatus
 import kr.spot.core.post.application.CommentCommandService
 import kr.spot.core.post.presentation.command.dto.request.ManageCommentRequest
 import kr.spot.core.post.presentation.command.dto.response.CreateCommentResponse
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestAttribute
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Tag(name = "게시글 - 댓글")
 @RestController
@@ -27,7 +21,7 @@ class CommentCommandController(
     fun createComment(
         @RequestBody request: ManageCommentRequest,
         @PathVariable postId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<CreateCommentResponse> {
         val commentId =
             commentCommandService.createComment(
@@ -44,7 +38,7 @@ class CommentCommandController(
         @RequestBody request: ManageCommentRequest,
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         commentCommandService.updateComment(
             memberId = memberId,
@@ -60,7 +54,7 @@ class CommentCommandController(
     fun deleteComment(
         @PathVariable postId: Long,
         @PathVariable commentId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @Parameter(hidden = true) @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         commentCommandService.deleteComment(memberId = memberId, postId = postId, commentId = commentId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)

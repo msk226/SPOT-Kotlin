@@ -1,0 +1,4 @@
+-- 각 모듈별 데이터베이스 생성
+CREATE DATABASE IF NOT EXISTS spot_core;
+CREATE DATABASE IF NOT EXISTS spot_study;
+CREATE DATABASE IF NOT EXISTS spot_worker;

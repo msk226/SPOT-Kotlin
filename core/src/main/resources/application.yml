@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/spot_core
     username: root
-    password: ${DB_PASSWORD}
+    password: 5167
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

@@ -26,28 +26,6 @@ import org.springframework.web.bind.annotation.RestController
 class StudySearchController(
     private val getMyStudyInfoService: GetMyStudyInfoService
 ) {
-    @Operation(
-        summary = "마이페이지 스터디 조회",
-        description = """마이페이지에 필요한 스터디를 조회합니다.
-
- 모집 중인 스터디 : status = OWNER (기본값)
-
- 참여 중인 스터디 : statuses = {OWNER, APPROVED}
-
- 대기 중인 스터디 : status = APPLIED"""
-    )
-    @GetMapping("/me")
-    fun getMyStudies(
-        @RequestHeader("X-Member-Id") @Parameter(hidden = true) viewerId: Long,
-        @RequestParam(required = false, defaultValue = "OWNER") statuses: List<StudyMemberStatus>,
-        @RequestParam(required = false) cursor: Long?,
-        @RequestParam(defaultValue = "10") @Min(1) @Max(50) size: Int
-    ): ResponseEntity<ApiResponse<GetStudyOverviewResponse>> =
-        ResponseEntity.ok(
-            ApiResponse.ok(
-                getMyStudyInfoService.getMyStudyOverview(viewerId, statuses, cursor, size)
-            )
-        )
 
     @Operation(
         summary = "모집 중 스터디 조회",
@@ -55,7 +33,7 @@ class StudySearchController(
     )
     @GetMapping("/recruiting")
     fun getRecruitingStudies(
-        @RequestHeader("X-Member-Id") @Parameter(hidden = true) viewerId: Long,
+        @RequestHeader viewerId: Long,
         @RequestParam(required = false) feeCategory: FeeCategory?,
         @RequestParam(required = false) categories: List<Category>?,
         @RequestParam(required = false) isOnline: Boolean?,
