@@ -20,7 +20,7 @@ class GetAttendanceService(
     private val attendanceRepository: AttendanceRepository,
     private val studyAccessValidator: StudyAccessValidator
 ) {
-    fun getAttendanceQrCode(
+    fun getAttendanceInfo(
         studyId: Long,
         scheduleId: Long,
         memberId: Long
@@ -30,7 +30,7 @@ class GetAttendanceService(
         val schedule = getById(scheduleId)
         return GetAttendanceInfoResponse.of(
             schedule.attendanceActive,
-            schedule.attendanceQrCodeImageUrl
+            schedule.attendanceCode
         )
     }
 

@@ -20,47 +20,7 @@ import org.springframework.stereotype.Repository
 class StudyQueryRepository(
     private val query: JPAQueryFactory
 ) {
-    fun findMyStudies(
-        viewerId: Long,
-        statuses: List<StudyMemberStatus>,
-        cursor: Long?,
-        limit: Int
-    ): List<Study> {
-        val study = QStudy.study
-        val studyMember = QStudyMember.studyMember
-
-        return query
-            .select(study)
-            .from(studyMember)
-            .join(study)
-            .on(study.id.eq(studyMember.studyId))
-            .where(
-                studyMember.memberId.eq(viewerId),
-                studyMember.studyMemberStatus.`in`(statuses),
-                ltCursor(cursor, study)
-            ).orderBy(study.id.desc())
-            .limit(limit.toLong())
-            .fetch()
-    }
-
-    fun countMyStudies(
-        viewerId: Long,
-        statuses: List<StudyMemberStatus>
-    ): Long {
-        val study = QStudy.study
-        val studyMember = QStudyMember.studyMember
-
-        return query
-            .select(study.id.countDistinct())
-            .from(studyMember)
-            .join(study)
-            .on(study.id.eq(studyMember.studyId))
-            .where(
-                studyMember.memberId.eq(viewerId),
-                studyMember.studyMemberStatus.`in`(statuses)
-            ).fetchOne() ?: 0L
-    }
-
+    
     @Suppress("LongParameterList")
     fun findRecruitingStudies(
         feeCategory: FeeCategory?,

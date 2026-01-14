@@ -31,14 +31,14 @@ class AttendanceQueryController(
         return ResponseEntity.ok(ApiResponse.ok(response))
     }
 
-    @Operation(summary = "출석체크 QR 코드 조회", description = "출석체크용 QR 코드 이미지 URL을 조회합니다.")
-    @GetMapping("/qr")
-    fun getAttendanceQrCode(
+    @Operation(summary = "출석 정보 조회", description = "출석체크 활성 상태 및 출석 코드를 조회합니다.")
+    @GetMapping("/info")
+    fun getAttendanceInfo(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
         @RequestHeader("X-Member-Id") memberId: Long
     ): ResponseEntity<ApiResponse<GetAttendanceInfoResponse>> {
-        val response = getAttendanceService.getAttendanceQrCode(studyId, scheduleId, memberId)
+        val response = getAttendanceService.getAttendanceInfo(studyId, scheduleId, memberId)
         return ResponseEntity.ok(ApiResponse.ok(response))
     }
 }

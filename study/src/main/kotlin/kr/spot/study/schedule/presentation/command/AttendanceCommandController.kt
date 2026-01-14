@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.RestController
 class AttendanceCommandController(
     private val attendanceCommandService: AttendanceCommandService
 ) {
-    @Operation(summary = "출석체크 시작", description = "스터디장이 출석체크를 시작합니다.")
+    @Operation(summary = "출석체크 시작", description = "스터디장이 출석체크를 시작합니다. 6자리 출석 코드가 반환됩니다.")
     @PostMapping
     fun startAttendanceCheck(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
         @RequestHeader("X-Member-Id") memberId: Long
-    ): ResponseEntity<ApiResponse<Unit>> {
-        attendanceCommandService.startAttendance(studyId, scheduleId, memberId)
-        return ResponseEntity.ok(ApiResponse.ok())
+    ): ResponseEntity<ApiResponse<StartAttendanceResponse>> {
+        val attendanceCode = attendanceCommandService.startAttendance(studyId, scheduleId, memberId)
+        return ResponseEntity.ok(ApiResponse.ok(StartAttendanceResponse(attendanceCode)))
     }
 
     @Operation(summary = "출석체크 종료", description = "스터디장이 출석체크를 종료합니다.")
@@ -42,17 +42,20 @@ class AttendanceCommandController(
         return ResponseEntity.ok(ApiResponse.ok())
     }
 
-    @Suppress("UnusedParameter")
-    @Operation(summary = "출석체크 처리 (QR 스캔)", description = "QR 코드를 스캔하여 출석체크를 처리합니다.")
+    @Operation(summary = "출석체크 처리", description = "출석 코드를 입력하여 출석체크를 처리합니다.")
     @PostMapping("/check")
     fun checkAttendance(
         @Parameter(description = "스터디 ID", required = true) @PathVariable studyId: Long,
         @Parameter(description = "일정 ID", required = true) @PathVariable scheduleId: Long,
-        @Parameter(description = "QR 코드에서 읽은 암호화된 출석 토큰", required = true)
-        @RequestParam token: String,
+        @Parameter(description = "6자리 출석 코드", required = true)
+        @RequestParam code: String,
         @RequestHeader("X-Member-Id") memberId: Long
     ): ResponseEntity<ApiResponse<Unit>> {
-//        attendanceCommandService.checkAttendance(token, memberId)
+        attendanceCommandService.checkAttendance(studyId, scheduleId, code, memberId)
         return ResponseEntity.ok(ApiResponse.ok())
     }
 }
+
+data class StartAttendanceResponse(
+    val attendanceCode: String
+)

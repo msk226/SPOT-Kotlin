@@ -23,12 +23,12 @@ class Schedule private constructor(
     val startAt: LocalDateTime?,
     val endAt: LocalDateTime?,
     attendanceActive: Boolean,
-    attendanceQrCodeImageUrl: String?
+    attendanceCode: String?
 ) : BaseEntity() {
     var attendanceActive: Boolean = attendanceActive
         private set
 
-    var attendanceQrCodeImageUrl: String? = attendanceQrCodeImageUrl
+    var attendanceCode: String? = attendanceCode
         private set
 
     fun delete(studyId: Long) {
@@ -53,11 +53,11 @@ class Schedule private constructor(
     fun stopAttendance(studyId: Long) {
         validateIsValidAccess(studyId)
         this.attendanceActive = false
-        this.attendanceQrCodeImageUrl = null
+        this.attendanceCode = null
     }
 
-    fun updateQrCodeImageUrl(url: String) {
-        this.attendanceQrCodeImageUrl = url
+    fun updateAttendanceCode(code: String) {
+        this.attendanceCode = code
     }
 
     fun validateAttendanceCheckable() {
@@ -106,7 +106,7 @@ class Schedule private constructor(
                 startAt = startAt,
                 endAt = endAt,
                 attendanceActive = false,
-                attendanceQrCodeImageUrl = null
+                attendanceCode = null
             )
     }
 }
