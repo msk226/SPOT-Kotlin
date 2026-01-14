@@ -7,14 +7,7 @@ import kr.spot.common.api.status.SuccessStatus
 import kr.spot.core.post.application.PostCommandService
 import kr.spot.core.post.presentation.command.dto.request.ManagePostRequest
 import kr.spot.core.post.presentation.command.dto.response.CreatePostResponse
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestAttribute
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Tag(name = "게시글")
 @RestController
@@ -26,7 +19,7 @@ class PostCommandController(
     @PostMapping
     fun createPost(
         @RequestBody request: ManagePostRequest,
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<CreatePostResponse> {
         val postId =
             postCommandService.createPost(
@@ -43,7 +36,7 @@ class PostCommandController(
     fun updatePost(
         @RequestBody request: ManagePostRequest,
         @PathVariable postId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.updatePost(
             memberId = memberId,
@@ -59,7 +52,7 @@ class PostCommandController(
     @DeleteMapping("/{postId}")
     fun deletePost(
         @PathVariable postId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.deletePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -69,7 +62,7 @@ class PostCommandController(
     @PostMapping("/{postId}/like")
     fun likePost(
         @PathVariable postId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.likePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
@@ -79,7 +72,7 @@ class PostCommandController(
     @DeleteMapping("/{postId}/like")
     fun unlikePost(
         @PathVariable postId: Long,
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<Unit> {
         postCommandService.unlikePost(memberId = memberId, postId = postId)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)

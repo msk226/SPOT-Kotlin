@@ -10,6 +10,7 @@ import kr.spot.core.post.presentation.query.dto.response.PostListResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestAttribute
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -24,7 +25,7 @@ class PostQueryController(
     @GetMapping("/{postId}")
     fun getPostDetail(
         @PathVariable postId: Long,
-        @RequestAttribute(value = "memberId", required = false) memberId: Long?
+        @RequestHeader memberId: Long?
     ): ApiResponse<PostDetailResponse> {
         val response = postQueryService.getPostDetail(postId, memberId)
         return ApiResponse.ok(response)
@@ -36,7 +37,7 @@ class PostQueryController(
         @RequestParam(required = false) cursor: Long?,
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(required = false) postType: PostType?,
-        @RequestAttribute(value = "memberId", required = false) memberId: Long?
+        @RequestHeader memberId: Long?
     ): ApiResponse<PostListResponse> {
         val response = postQueryService.getPostList(cursor, size, postType, memberId)
         return ApiResponse.ok(response)

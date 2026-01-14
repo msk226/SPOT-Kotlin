@@ -15,13 +15,7 @@ import kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberNameResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberPreferCategoryResponse
 import kr.spot.core.member.presentation.dto.response.GetMemberPreferRegionResponse
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestAttribute
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Tag(name = "회원")
 @RestController
@@ -35,7 +29,7 @@ class MemberController(
     @Operation(summary = "회원 이름 조회")
     @GetMapping("/name")
     fun getMemberName(
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<GetMemberNameResponse> {
         val name = memberQueryService.getMemberName(memberId)
         return ApiResponse.ok(GetMemberNameResponse.from(name))
@@ -44,29 +38,12 @@ class MemberController(
     @Operation(summary = "회원 정보 조회")
     @GetMapping("/info")
     fun getMemberInfo(
-        @RequestAttribute("memberId") memberId: Long
+        @RequestHeader memberId: Long
     ): ApiResponse<GetMemberInfoResponse> {
         val member = memberQueryService.getMember(memberId)
         return ApiResponse.ok(GetMemberInfoResponse.from(member))
     }
 
-    @Operation(summary = "선호 카테고리 조회")
-    @GetMapping("/prefer-categories")
-    fun getPreferCategories(
-        @RequestAttribute("memberId") memberId: Long
-    ): ApiResponse<GetMemberPreferCategoryResponse> {
-        val categories = memberQueryService.getPreferredCategories(memberId)
-        return ApiResponse.ok(GetMemberPreferCategoryResponse.from(categories))
-    }
-
-    @Operation(summary = "선호 지역 조회")
-    @GetMapping("/prefer-regions")
-    fun getPreferRegions(
-        @RequestAttribute("memberId") memberId: Long
-    ): ApiResponse<GetMemberPreferRegionResponse> {
-        val regions = memberQueryService.getPreferredRegions(memberId)
-        return ApiResponse.ok(GetMemberPreferRegionResponse.from(regions))
-    }
 
     // ==================== Command ====================
 
@@ -77,26 +54,6 @@ class MemberController(
         @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<Unit> {
         memberCommandService.registerPreferCategories(memberId, request.categories)
-        return ApiResponse.success(SuccessStatus.NO_CONTENT)
-    }
-
-    @Operation(summary = "회원 선호 지역 설정")
-    @PostMapping("/prefer-regions")
-    fun registerPreferRegions(
-        @RequestBody request: RegisterPreferredRegionRequest,
-        @RequestAttribute("memberId") memberId: Long
-    ): ApiResponse<Unit> {
-        memberCommandService.registerPreferRegions(memberId, request.regionCodes)
-        return ApiResponse.success(SuccessStatus.NO_CONTENT)
-    }
-
-    @Operation(summary = "회원 이름 수정")
-    @PostMapping("/name")
-    fun updateMemberName(
-        @RequestBody request: UpdateMemberNameRequest,
-        @RequestAttribute("memberId") memberId: Long
-    ): ApiResponse<Unit> {
-        memberCommandService.updateName(memberId, request.name)
         return ApiResponse.success(SuccessStatus.NO_CONTENT)
     }
 
