@@ -17,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor
 @Component
 class MemberIdInterceptor : HandlerInterceptor {
     companion object {
-        const val HEADER_NAME = "X-Member-Id"
+        const val HEADER_NAME = "memberId"
         const val ATTRIBUTE_NAME = "memberId"
     }
 

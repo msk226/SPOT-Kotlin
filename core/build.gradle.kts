@@ -28,7 +28,7 @@ dependencies {
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // OpenAPI (Swagger)
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
     // Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
