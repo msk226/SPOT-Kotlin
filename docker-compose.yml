@@ -1,12 +1,33 @@
 services:
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: spot-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: bl2KybbJxFGDxeMZ8xBA6N
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mysql:
     image: mysql:8.0
     container_name: spot-mysql
-    ports:
-      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: spot_core
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME_CORE}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -19,8 +40,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: spot-redis
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -35,11 +54,16 @@ services:
     container_name: spot-core
     ports:
       - "8081:8081"
+    env_file:
+      - ./.env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/spot_core
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_CORE}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
+      kafka:
+        condition: service_healthy
       mysql:
         condition: service_healthy
 
@@ -51,13 +75,19 @@ services:
     container_name: spot-study
     ports:
       - "8082:8082"
+    env_file:
+      - ./.env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/spot_study
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_STUDY}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       CORE_SERVICE_URL: http://core:8081
     depends_on:
+      kafka:
+        condition: service_healthy
       mysql:
         condition: service_healthy
       redis:
@@ -73,16 +103,66 @@ services:
     container_name: spot-worker
     ports:
       - "8083:8083"
+    env_file:
+      - ./.env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/spot_worker
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_WORKER}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
+      kafka:
+        condition: service_healthy
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
 
+  # ============ Monitoring ============
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: spot-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - kafka-exporter
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: spot-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:v1.7.0
+    container_name: spot-kafka-exporter
+    command:
+      - '--kafka.server=kafka:9092'
+    ports:
+      - "9308:9308"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
 volumes:
   mysql_data:
+  prometheus_data:
+  grafana_data:

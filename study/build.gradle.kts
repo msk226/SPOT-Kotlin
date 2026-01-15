@@ -24,6 +24,9 @@ dependencies {
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // Kafka
+    implementation("org.springframework.kafka:spring-kafka")
+
     // QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")

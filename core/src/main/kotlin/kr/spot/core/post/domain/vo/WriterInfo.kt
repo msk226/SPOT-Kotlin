@@ -1,8 +1,8 @@
 package kr.spot.core.post.domain.vo
 
 import jakarta.persistence.Embeddable
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 
 @Embeddable
 class WriterInfo(

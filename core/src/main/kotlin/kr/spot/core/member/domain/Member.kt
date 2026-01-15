@@ -8,8 +8,8 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.core.global.domain.BaseEntity
 import kr.spot.core.member.domain.enums.LoginType
 import kr.spot.core.member.domain.vo.Email
@@ -39,6 +39,17 @@ class Member private constructor(
             throw GeneralException(ErrorStatus.NAME_CAN_NOT_NULL_OR_EMPTY)
         }
         this.name = newName
+    }
+
+    fun updateProfile(
+        newName: String,
+        newProfileImageUrl: String?
+    ) {
+        require(newName.isNotBlank()) {
+            throw GeneralException(ErrorStatus.NAME_CAN_NOT_NULL_OR_EMPTY)
+        }
+        this.name = newName
+        this.profileImageUrl = newProfileImageUrl
     }
 
     companion object {

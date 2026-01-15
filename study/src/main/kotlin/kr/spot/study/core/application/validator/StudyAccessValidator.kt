@@ -1,7 +1,7 @@
 package kr.spot.study.core.application.validator
 
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.study.core.domain.enums.StudyMemberStatus
 import kr.spot.study.core.infrastructure.jpa.StudyMemberRepository
 import kr.spot.study.core.infrastructure.jpa.StudyRepository

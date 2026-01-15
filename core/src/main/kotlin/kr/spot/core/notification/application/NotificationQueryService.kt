@@ -1,7 +1,7 @@
 package kr.spot.core.notification.application
 
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.core.notification.infrastructure.NotificationRepository
 import kr.spot.core.notification.presentation.dto.response.NotificationListResponse
 import kr.spot.core.notification.presentation.dto.response.NotificationResponse

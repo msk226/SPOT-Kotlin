@@ -5,8 +5,8 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
 import kr.spot.study.core.domain.enums.Decision
 import kr.spot.study.core.domain.enums.StudyMemberStatus
 import kr.spot.study.global.domain.BaseEntity
