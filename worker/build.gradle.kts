@@ -16,6 +16,9 @@ dependencies {
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // Kafka
+    implementation("org.springframework.kafka:spring-kafka")
+
     // Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
