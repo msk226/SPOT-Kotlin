@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 
 interface ReviewRepository : JpaRepository<Review, Long> {
-
     @Modifying
     @Query(
         """
@@ -16,5 +15,9 @@ interface ReviewRepository : JpaRepository<Review, Long> {
         WHERE r.writerInfo.writerId = :memberId
         """
     )
-    fun updateWriterInfo(memberId: Long, nickname: String, profileImageUrl: String?): Int
+    fun updateWriterInfo(
+        memberId: Long,
+        nickname: String,
+        profileImageUrl: String?
+    ): Int
 }

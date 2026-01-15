@@ -23,5 +23,9 @@ interface AttendanceRepository : JpaRepository<Attendance, Long> {
         WHERE a.memberInfo.memberId = :memberId
         """
     )
-    fun updateMemberInfo(memberId: Long, nickname: String, profileImageUrl: String?): Int
+    fun updateMemberInfo(
+        memberId: Long,
+        nickname: String,
+        profileImageUrl: String?
+    ): Int
 }

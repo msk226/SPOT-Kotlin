@@ -26,11 +26,13 @@ class MemberIdInterceptor : HandlerInterceptor {
         response: HttpServletResponse,
         handler: Any
     ): Boolean {
-        val memberIdHeader = request.getHeader(HEADER_NAME)
-            ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
+        val memberIdHeader =
+            request.getHeader(HEADER_NAME)
+                ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
 
-        val memberId = memberIdHeader.toLongOrNull()
-            ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
+        val memberId =
+            memberIdHeader.toLongOrNull()
+                ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
 
         request.setAttribute(ATTRIBUTE_NAME, memberId)
         return true

@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
-class EventMetrics(private val meterRegistry: MeterRegistry) {
-
+class EventMetrics(
+    private val meterRegistry: MeterRegistry
+) {
     private val publishedCounters = ConcurrentHashMap<String, Counter>()
     private val publishFailedCounters = ConcurrentHashMap<String, Counter>()
     private val consumedCounters = ConcurrentHashMap<String, Counter>()
@@ -18,56 +19,78 @@ class EventMetrics(private val meterRegistry: MeterRegistry) {
 
     fun recordPublished(eventType: EventType) {
         val key = "${eventType.value}:${eventType.topic}"
-        publishedCounters.computeIfAbsent(key) {
-            Counter.builder(EVENTS_PUBLISHED)
-                .tag(TAG_EVENT_TYPE, eventType.value)
-                .tag(TAG_TOPIC, eventType.topic)
-                .description("Number of events published successfully")
-                .register(meterRegistry)
-        }.increment()
+        publishedCounters
+            .computeIfAbsent(key) {
+                Counter
+                    .builder(EVENTS_PUBLISHED)
+                    .tag(TAG_EVENT_TYPE, eventType.value)
+                    .tag(TAG_TOPIC, eventType.topic)
+                    .description("Number of events published successfully")
+                    .register(meterRegistry)
+            }.increment()
     }
 
-    fun recordPublishFailed(eventType: EventType, errorType: String) {
+    fun recordPublishFailed(
+        eventType: EventType,
+        errorType: String
+    ) {
         val key = "${eventType.value}:${eventType.topic}:$errorType"
-        publishFailedCounters.computeIfAbsent(key) {
-            Counter.builder(EVENTS_PUBLISH_FAILED)
-                .tag(TAG_EVENT_TYPE, eventType.value)
-                .tag(TAG_TOPIC, eventType.topic)
-                .tag(TAG_ERROR, errorType)
-                .description("Number of events failed to publish")
-                .register(meterRegistry)
-        }.increment()
+        publishFailedCounters
+            .computeIfAbsent(key) {
+                Counter
+                    .builder(EVENTS_PUBLISH_FAILED)
+                    .tag(TAG_EVENT_TYPE, eventType.value)
+                    .tag(TAG_TOPIC, eventType.topic)
+                    .tag(TAG_ERROR, errorType)
+                    .description("Number of events failed to publish")
+                    .register(meterRegistry)
+            }.increment()
     }
 
-    fun recordConsumed(eventType: EventType, consumerGroup: String) {
+    fun recordConsumed(
+        eventType: EventType,
+        consumerGroup: String
+    ) {
         val key = "${eventType.value}:${eventType.topic}:$consumerGroup"
-        consumedCounters.computeIfAbsent(key) {
-            Counter.builder(EVENTS_CONSUMED)
-                .tag(TAG_EVENT_TYPE, eventType.value)
-                .tag(TAG_TOPIC, eventType.topic)
-                .tag(TAG_CONSUMER_GROUP, consumerGroup)
-                .description("Number of events consumed successfully")
-                .register(meterRegistry)
-        }.increment()
+        consumedCounters
+            .computeIfAbsent(key) {
+                Counter
+                    .builder(EVENTS_CONSUMED)
+                    .tag(TAG_EVENT_TYPE, eventType.value)
+                    .tag(TAG_TOPIC, eventType.topic)
+                    .tag(TAG_CONSUMER_GROUP, consumerGroup)
+                    .description("Number of events consumed successfully")
+                    .register(meterRegistry)
+            }.increment()
     }
 
-    fun recordConsumeFailed(eventType: EventType, consumerGroup: String, errorType: String) {
+    fun recordConsumeFailed(
+        eventType: EventType,
+        consumerGroup: String,
+        errorType: String
+    ) {
         val key = "${eventType.value}:${eventType.topic}:$consumerGroup:$errorType"
-        consumeFailedCounters.computeIfAbsent(key) {
-            Counter.builder(EVENTS_CONSUME_FAILED)
-                .tag(TAG_EVENT_TYPE, eventType.value)
-                .tag(TAG_TOPIC, eventType.topic)
-                .tag(TAG_CONSUMER_GROUP, consumerGroup)
-                .tag(TAG_ERROR, errorType)
-                .description("Number of events failed to consume")
-                .register(meterRegistry)
-        }.increment()
+        consumeFailedCounters
+            .computeIfAbsent(key) {
+                Counter
+                    .builder(EVENTS_CONSUME_FAILED)
+                    .tag(TAG_EVENT_TYPE, eventType.value)
+                    .tag(TAG_TOPIC, eventType.topic)
+                    .tag(TAG_CONSUMER_GROUP, consumerGroup)
+                    .tag(TAG_ERROR, errorType)
+                    .description("Number of events failed to consume")
+                    .register(meterRegistry)
+            }.increment()
     }
 
-    fun getConsumeTimer(eventType: EventType, consumerGroup: String): Timer {
+    fun getConsumeTimer(
+        eventType: EventType,
+        consumerGroup: String
+    ): Timer {
         val key = "${eventType.value}:$consumerGroup"
         return consumeTimers.computeIfAbsent(key) {
-            Timer.builder(EVENTS_CONSUME_DURATION)
+            Timer
+                .builder(EVENTS_CONSUME_DURATION)
                 .tag(TAG_EVENT_TYPE, eventType.value)
                 .tag(TAG_CONSUMER_GROUP, consumerGroup)
                 .description("Time taken to process an event")

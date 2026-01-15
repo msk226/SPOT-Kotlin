@@ -1,7 +1,7 @@
 package kr.spot.study.core.domain.enums
 
-import kr.spot.common.api.status.ErrorStatus
 import kr.spot.common.api.exception.GeneralException
+import kr.spot.common.api.status.ErrorStatus
 
 enum class Category {
     LANGUAGE, // 어학

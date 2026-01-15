@@ -55,19 +55,26 @@ class MemberCommandService(
      * 회원 프로필 업데이트
      * 프로필 변경 시 MemberProfileUpdatedEvent 발행
      */
-    fun updateProfile(memberId: Long, name: String, profileImageUrl: String?) {
-        val member = memberRepository.findById(memberId)
-            .orElseThrow { GeneralException(ErrorStatus.MEMBER_NOT_FOUND) }
+    fun updateProfile(
+        memberId: Long,
+        name: String,
+        profileImageUrl: String?
+    ) {
+        val member =
+            memberRepository
+                .findById(memberId)
+                .orElseThrow { GeneralException(ErrorStatus.MEMBER_NOT_FOUND) }
 
         member.updateProfile(name, profileImageUrl)
 
         eventPublisher.publish(
             key = memberId.toString(),
-            event = MemberProfileUpdatedEvent(
-                memberId = memberId,
-                nickname = name,
-                profileImageUrl = profileImageUrl
-            )
+            event =
+                MemberProfileUpdatedEvent(
+                    memberId = memberId,
+                    nickname = name,
+                    profileImageUrl = profileImageUrl
+                )
         )
     }
 

@@ -28,7 +28,9 @@ abstract class AbstractEventConsumer<T : DomainEvent>(
         )
 
         val timer = eventMetrics.getConsumeTimer(event.eventType, consumerGroup)
-        val sample = io.micrometer.core.instrument.Timer.start()
+        val sample =
+            io.micrometer.core.instrument.Timer
+                .start()
 
         try {
             handler(event)

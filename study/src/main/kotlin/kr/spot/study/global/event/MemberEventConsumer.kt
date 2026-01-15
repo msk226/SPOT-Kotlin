@@ -18,7 +18,6 @@ class MemberEventConsumer(
     private val attendanceRepository: AttendanceRepository,
     eventMetrics: EventMetrics
 ) : AbstractEventConsumer<MemberProfileUpdatedEvent>(eventMetrics, CONSUMER_GROUP) {
-
     private val log = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(
@@ -34,17 +33,19 @@ class MemberEventConsumer(
     }
 
     private fun updateDenormalizedColumns(event: MemberProfileUpdatedEvent) {
-        val reviewCount = reviewRepository.updateWriterInfo(
-            memberId = event.memberId,
-            nickname = event.nickname,
-            profileImageUrl = event.profileImageUrl
-        )
+        val reviewCount =
+            reviewRepository.updateWriterInfo(
+                memberId = event.memberId,
+                nickname = event.nickname,
+                profileImageUrl = event.profileImageUrl
+            )
 
-        val attendanceCount = attendanceRepository.updateMemberInfo(
-            memberId = event.memberId,
-            nickname = event.nickname,
-            profileImageUrl = event.profileImageUrl
-        )
+        val attendanceCount =
+            attendanceRepository.updateMemberInfo(
+                memberId = event.memberId,
+                nickname = event.nickname,
+                profileImageUrl = event.profileImageUrl
+            )
 
         log.info(
             "[Denormalize] Updated member info - memberId: {}, reviewsUpdated: {}, attendancesUpdated: {}",

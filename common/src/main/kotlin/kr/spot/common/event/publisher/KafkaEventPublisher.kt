@@ -17,15 +17,21 @@ class KafkaEventPublisher(
         publish(event.eventId, event)
     }
 
-    fun publish(key: String, event: DomainEvent) {
+    fun publish(
+        key: String,
+        event: DomainEvent
+    ) {
         val topic = event.topic
 
         log.debug(
             "[Kafka] Publishing event - topic: {}, eventType: {}, eventId: {}",
-            topic, event.eventType.value, event.eventId
+            topic,
+            event.eventType.value,
+            event.eventId
         )
 
-        kafkaTemplate.send(topic, key, event)
+        kafkaTemplate
+            .send(topic, key, event)
             .whenComplete { result, ex ->
                 if (ex == null) {
                     log.info(
@@ -51,17 +57,20 @@ class KafkaEventPublisher(
             }
     }
 
-    fun publishSync(event: DomainEvent): Boolean {
-        return publishSync(event.eventId, event)
-    }
+    fun publishSync(event: DomainEvent): Boolean = publishSync(event.eventId, event)
 
-    fun publishSync(key: String, event: DomainEvent): Boolean {
+    fun publishSync(
+        key: String,
+        event: DomainEvent
+    ): Boolean {
         val topic = event.topic
 
         return try {
             log.debug(
                 "[Kafka] Publishing event (sync) - topic: {}, eventType: {}, eventId: {}",
-                topic, event.eventType.value, event.eventId
+                topic,
+                event.eventType.value,
+                event.eventId
             )
 
             val result = kafkaTemplate.send(topic, key, event).get()

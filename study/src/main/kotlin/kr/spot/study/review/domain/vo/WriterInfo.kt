@@ -2,8 +2,8 @@ package kr.spot.study.review.domain.vo
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
-import kr.spot.common.api.status.ErrorStatus
 import kr.spot.common.api.exception.GeneralException
+import kr.spot.common.api.status.ErrorStatus
 
 @Embeddable
 data class WriterInfo(
