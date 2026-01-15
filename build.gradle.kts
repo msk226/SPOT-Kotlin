@@ -52,6 +52,9 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+        // Micrometer (Prometheus metrics)
+        implementation("io.micrometer:micrometer-registry-prometheus")
+
         // Test
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

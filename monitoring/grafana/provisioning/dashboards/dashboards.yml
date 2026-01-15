@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'spot-dashboards'
+    orgId: 1
+    folder: 'SPOT'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
