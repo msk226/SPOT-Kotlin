@@ -42,3 +42,6 @@ out/
 ### Claude AI ###
 .claude/
 CLAUDE.md
+
+### Codex AI ###
+AGENTS.md
