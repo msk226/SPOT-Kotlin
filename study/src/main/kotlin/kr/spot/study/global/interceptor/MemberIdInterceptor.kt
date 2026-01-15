@@ -2,6 +2,8 @@ package kr.spot.study.global.interceptor
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import kr.spot.common.api.exception.GeneralException
+import kr.spot.common.api.status.ErrorStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 
@@ -25,14 +27,12 @@ class MemberIdInterceptor : HandlerInterceptor {
         handler: Any
     ): Boolean {
         val memberIdHeader = request.getHeader(HEADER_NAME)
+            ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
 
-        if (memberIdHeader != null) {
-            val memberId = memberIdHeader.toLongOrNull()
-            if (memberId != null) {
-                request.setAttribute(ATTRIBUTE_NAME, memberId)
-            }
-        }
+        val memberId = memberIdHeader.toLongOrNull()
+            ?: throw GeneralException(ErrorStatus.UNAUTHORIZED)
 
+        request.setAttribute(ATTRIBUTE_NAME, memberId)
         return true
     }
 }
