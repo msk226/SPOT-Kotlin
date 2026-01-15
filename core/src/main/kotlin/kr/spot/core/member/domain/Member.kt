@@ -41,6 +41,14 @@ class Member private constructor(
         this.name = newName
     }
 
+    fun updateProfile(newName: String, newProfileImageUrl: String?) {
+        require(newName.isNotBlank()) {
+            throw GeneralException(ErrorStatus.NAME_CAN_NOT_NULL_OR_EMPTY)
+        }
+        this.name = newName
+        this.profileImageUrl = newProfileImageUrl
+    }
+
     companion object {
         fun of(
             id: Long,

@@ -1,5 +1,9 @@
 package kr.spot.core.member.application
 
+import kr.spot.common.api.exception.GeneralException
+import kr.spot.common.api.status.ErrorStatus
+import kr.spot.common.event.payload.MemberProfileUpdatedEvent
+import kr.spot.common.event.publisher.KafkaEventPublisher
 import kr.spot.common.id.IdGenerator
 import kr.spot.core.member.domain.Member
 import kr.spot.core.member.domain.PreferredCategory
@@ -15,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional
 class MemberCommandService(
     private val idGenerator: IdGenerator,
     private val memberRepository: MemberRepository,
-    private val preferredCategoryRepository: PreferredCategoryRepository
+    private val preferredCategoryRepository: PreferredCategoryRepository,
+    private val eventPublisher: KafkaEventPublisher
 ) {
     /**
      * 테스트용 회원 생성
@@ -44,6 +49,26 @@ class MemberCommandService(
         // TODO: hasActiveStudyAsLeader 검증
         memberRepository.deleteById(memberId)
         // TODO: eventPublisher.publishEvent(MemberWithdrawnEvent(memberId))
+    }
+
+    /**
+     * 회원 프로필 업데이트
+     * 프로필 변경 시 MemberProfileUpdatedEvent 발행
+     */
+    fun updateProfile(memberId: Long, name: String, profileImageUrl: String?) {
+        val member = memberRepository.findById(memberId)
+            .orElseThrow { GeneralException(ErrorStatus.MEMBER_NOT_FOUND) }
+
+        member.updateProfile(name, profileImageUrl)
+
+        eventPublisher.publish(
+            key = memberId.toString(),
+            event = MemberProfileUpdatedEvent(
+                memberId = memberId,
+                nickname = name,
+                profileImageUrl = profileImageUrl
+            )
+        )
     }
 
     /**
