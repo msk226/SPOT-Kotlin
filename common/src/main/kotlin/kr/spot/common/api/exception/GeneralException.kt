@@ -1,4 +1,4 @@
-package kr.spot.common.exception
+package kr.spot.common.api.exception
 
 import kr.spot.common.api.status.ErrorStatus
 

@@ -1,7 +1,7 @@
 package kr.spot.core.member.application
 
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.core.member.domain.Member
 import kr.spot.core.member.infrastructure.MemberRepository
 import org.springframework.stereotype.Service

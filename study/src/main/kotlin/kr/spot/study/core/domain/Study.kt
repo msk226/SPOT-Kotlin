@@ -2,7 +2,7 @@ package kr.spot.study.core.domain
 
 import jakarta.persistence.*
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.study.core.domain.enums.Decision
 import kr.spot.study.core.domain.enums.RecruitingStatus
 import kr.spot.study.core.domain.enums.StudyMemberStatus

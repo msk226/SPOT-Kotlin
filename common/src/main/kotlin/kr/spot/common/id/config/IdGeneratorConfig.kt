@@ -1,4 +1,4 @@
-package kr.spot.common.config
+package kr.spot.common.id.config
 
 import kr.spot.common.id.IdGenerator
 import kr.spot.common.id.Snowflake

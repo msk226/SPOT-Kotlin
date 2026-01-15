@@ -1,7 +1,7 @@
 package kr.spot.study.todo.application.command
 
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.id.IdGenerator
 import kr.spot.study.todo.domain.Todo
 import kr.spot.study.todo.infrastructure.jpa.TodoRepository

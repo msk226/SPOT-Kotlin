@@ -5,7 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.core.global.domain.BaseEntity
 import kr.spot.core.post.domain.vo.WriterInfo
 import org.hibernate.annotations.SQLDelete

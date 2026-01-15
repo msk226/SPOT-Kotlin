@@ -1,7 +1,7 @@
 package kr.spot.study.schedule.application.command
 
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.id.IdGenerator
 import kr.spot.common.ports.GetMemberInfoPort
 import kr.spot.study.core.application.validator.StudyAccessValidator

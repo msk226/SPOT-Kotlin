@@ -7,7 +7,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.core.global.domain.BaseEntity
 import kr.spot.core.notification.domain.enums.NotificationType
 import org.hibernate.annotations.SQLDelete

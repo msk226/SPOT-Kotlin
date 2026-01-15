@@ -3,7 +3,7 @@ package kr.spot.core.member.domain.vo
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 
 @Embeddable
 data class Email(

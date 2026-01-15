@@ -1,7 +1,7 @@
 package kr.spot.study.schedule.application.query
 
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.study.core.application.validator.StudyAccessValidator
 import kr.spot.study.schedule.domain.Schedule
 import kr.spot.study.schedule.infrastructure.jpa.AttendanceRepository

@@ -1,7 +1,7 @@
 package kr.spot.core.post.infrastructure.jpa
 
 import kr.spot.common.api.status.ErrorStatus
-import kr.spot.common.exception.GeneralException
+import kr.spot.common.api.exception.GeneralException
 import kr.spot.core.post.domain.Post
 import kr.spot.core.post.domain.enums.PostType
 import org.springframework.data.jpa.repository.JpaRepository
