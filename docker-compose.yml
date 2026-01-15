@@ -52,6 +52,8 @@ services:
       args:
         MODULE: core
     container_name: spot-core
+    ports:
+      - "8081:8081"
     env_file:
       - ./.env
     environment:
@@ -71,6 +73,8 @@ services:
       args:
         MODULE: study
     container_name: spot-study
+    ports:
+      - "8082:8082"
     env_file:
       - ./.env
     environment:
@@ -97,6 +101,8 @@ services:
       args:
         MODULE: worker
     container_name: spot-worker
+    ports:
+      - "8083:8083"
     env_file:
       - ./.env
     environment:
