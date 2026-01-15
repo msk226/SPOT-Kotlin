@@ -11,6 +11,7 @@ import kr.spot.core.member.domain.enums.LoginType
 import kr.spot.core.member.domain.vo.Email
 import kr.spot.core.member.infrastructure.MemberRepository
 import kr.spot.core.member.infrastructure.PreferredCategoryRepository
+import kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -57,13 +58,15 @@ class MemberCommandService(
      */
     fun updateProfile(
         memberId: Long,
-        name: String,
-        profileImageUrl: String?
+        updateMemberInfoRequest: UpdateMemberInfoRequest
     ) {
         val member =
             memberRepository
                 .findById(memberId)
                 .orElseThrow { GeneralException(ErrorStatus.MEMBER_NOT_FOUND) }
+
+        val name = updateMemberInfoRequest.name ?: member.name
+        val profileImageUrl = updateMemberInfoRequest.profileImageUrl ?: member.profileImageUrl
 
         member.updateProfile(name, profileImageUrl)
 
