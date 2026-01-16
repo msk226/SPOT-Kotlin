@@ -1,4 +1,5 @@
 plugins {
+    kotlin("plugin.spring")
     kotlin("plugin.jpa")
 }
 

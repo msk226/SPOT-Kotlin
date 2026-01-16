@@ -2,6 +2,7 @@ package kr.spot.core.member.application
 
 import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
+import kr.spot.common.event.payload.MemberCreatedEvent
 import kr.spot.common.event.payload.MemberProfileUpdatedEvent
 import kr.spot.common.event.publisher.KafkaEventPublisher
 import kr.spot.common.id.IdGenerator
@@ -12,6 +13,7 @@ import kr.spot.core.member.domain.vo.Email
 import kr.spot.core.member.infrastructure.MemberRepository
 import kr.spot.core.member.infrastructure.PreferredCategoryRepository
 import kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,7 +23,8 @@ class MemberCommandService(
     private val idGenerator: IdGenerator,
     private val memberRepository: MemberRepository,
     private val preferredCategoryRepository: PreferredCategoryRepository,
-    private val eventPublisher: KafkaEventPublisher
+    private val eventPublisher: KafkaEventPublisher,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) {
     /**
      * 테스트용 회원 생성
@@ -40,6 +43,7 @@ class MemberCommandService(
                 loginType = LoginType.KAKAO, // 테스트용 기본값
                 profileImageUrl = null
             )
+        applicationEventPublisher.publishEvent(MemberCreatedEvent(member.id))
         return memberRepository.save(member).id
     }
 

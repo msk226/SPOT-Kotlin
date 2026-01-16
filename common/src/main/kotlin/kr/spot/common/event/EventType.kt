@@ -7,6 +7,7 @@ enum class EventType(
     val topic: String
 ) {
     // Member Events
+    MEMBER_CREATED("member.created", Topics.MEMBER_EVENTS),
     MEMBER_PROFILE_UPDATED("member.profile.updated", Topics.MEMBER_EVENTS),
     MEMBER_DELETED("member.deleted", Topics.MEMBER_EVENTS),
 
