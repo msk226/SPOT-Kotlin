@@ -22,7 +22,6 @@ class PreferredCategory private constructor(
             id: Long,
             memberId: Long,
             category: String
-        ): PreferredCategory =
-            PreferredCategory(id, memberId, category)
+        ): PreferredCategory = PreferredCategory(id, memberId, category)
     }
 }

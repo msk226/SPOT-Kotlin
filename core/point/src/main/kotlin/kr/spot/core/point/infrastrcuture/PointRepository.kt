@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 
 interface PointRepository : JpaRepository<Point, Long> {
-
     fun findByMemberId(memberId: Long): Point?
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

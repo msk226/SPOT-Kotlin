@@ -20,9 +20,9 @@ class PointKafkaEventListener(
     private val pointHistoryRepository: PointHistoryRepository,
     private val pointRepository: PointRepository
 ) : AbstractEventConsumer<PointGrantedEvent>(
-    eventMetrics = eventMetrics,
-    consumerGroup = "core-point"
-) {
+        eventMetrics = eventMetrics,
+        consumerGroup = "core-point"
+    ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
@@ -36,10 +36,11 @@ class PointKafkaEventListener(
             return
         }
 
-        val point = findPointByMemberIdWithLock(event.memberId) ?: run {
-            log.warn("[Kafka] Member not found - memberId: {}, eventId: {}", event.memberId, event.eventId)
-            return
-        }
+        val point =
+            findPointByMemberIdWithLock(event.memberId) ?: run {
+                log.warn("[Kafka] Member not found - memberId: {}, eventId: {}", event.memberId, event.eventId)
+                return
+            }
 
         pointHistoryRepository.save(createHistory(event))
         point.increaseAmount(event.points)
@@ -64,6 +65,5 @@ class PointKafkaEventListener(
             grantedAt = event.grantedAt
         )
 
-    private fun findPointByMemberIdWithLock(memberId: Long) =
-        pointRepository.findWithLockByMemberId(memberId)
+    private fun findPointByMemberIdWithLock(memberId: Long) = pointRepository.findWithLockByMemberId(memberId)
 }

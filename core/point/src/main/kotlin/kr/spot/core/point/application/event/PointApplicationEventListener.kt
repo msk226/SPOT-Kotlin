@@ -9,16 +9,17 @@ import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 
 @Component
-class PointApplicationEventListener (
+class PointApplicationEventListener(
     private val idGenerator: IdGenerator,
     private val pointRepository: PointRepository
-){
-
+) {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun registerPoint(event: MemberCreatedEvent) {
-        pointRepository.save(Point.create(
-            idGenerator.nextId(),
-            event.memberId
-        ))
+        pointRepository.save(
+            Point.create(
+                idGenerator.nextId(),
+                event.memberId
+            )
+        )
     }
 }

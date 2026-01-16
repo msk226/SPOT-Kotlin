@@ -23,7 +23,6 @@ data class Email(
     companion object {
         private val EMAIL_PATTERN = Regex("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
 
-        fun of(value: String): Email =
-            Email(value)
+        fun of(value: String): Email = Email(value)
     }
 }

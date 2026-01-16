@@ -28,7 +28,6 @@ class PointHistory private constructor(
     val referenceId: Long,
     val grantedAt: LocalDateTime
 ) : BaseEntity() {
-
     companion object {
         fun of(
             id: Long,
