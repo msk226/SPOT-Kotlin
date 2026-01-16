@@ -52,7 +52,7 @@ services:
     build:
       context: .
       args:
-        MODULE: core
+        MODULE: core/boot
     container_name: spot-core
     ports:
       - "8081:8081"
@@ -73,7 +73,7 @@ services:
     build:
       context: .
       args:
-        MODULE: study
+        MODULE: study/boot
     container_name: spot-study
     ports:
       - "8082:8082"
