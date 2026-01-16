@@ -101,7 +101,7 @@ services:
     build:
       context: .
       args:
-        MODULE: worker
+        MODULE: worker/boot
     container_name: spot-worker
     ports:
       - "8083:8083"
