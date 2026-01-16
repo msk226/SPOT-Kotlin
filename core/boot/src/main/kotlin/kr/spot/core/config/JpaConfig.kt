@@ -6,12 +6,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(
-    basePackages = [
-        "kr.spot.member",
-        "kr.spot.notification",
-        "kr.spot.post",
-        "kr.spot.point"
-    ]
-)
+@EnableJpaRepositories(basePackages = ["kr.spot.core"])
 class JpaConfig
