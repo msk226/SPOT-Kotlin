@@ -7,6 +7,9 @@ dependencies {
     // Spring Web (for MultipartFile)
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // Spring Data JPA (for BaseEntity)
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     // Validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
