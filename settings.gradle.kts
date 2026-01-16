@@ -18,3 +18,6 @@ include("study:core")
 include("study:schedule")
 include("study:review")
 include("study:todo")
+
+// worker 하위 모듈
+include("worker:boot")
