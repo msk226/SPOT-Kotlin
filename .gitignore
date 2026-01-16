@@ -48,3 +48,6 @@ AGENTS.md
 
 ### Enviroment ###
 .env
+
+### Policy ###
+docs/policy/*
