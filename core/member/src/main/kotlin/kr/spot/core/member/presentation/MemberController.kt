@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/members")
 class MemberController(
-    private val memberCommandService: kr.spot.core.member.application.MemberCommandService,
-    private val memberQueryService: kr.spot.core.member.application.MemberQueryService
+    private val memberCommandService: MemberCommandService,
+    private val memberQueryService: MemberQueryService
 ) {
     // ==================== Query ====================
 
@@ -28,10 +28,10 @@ class MemberController(
     @GetMapping("/name")
     fun getMemberName(
         @Parameter(hidden = true) @RequestHeader memberId: Long
-    ): ApiResponse<kr.spot.core.member.presentation.dto.response.GetMemberNameResponse> {
+    ): ApiResponse<GetMemberNameResponse> {
         val name = memberQueryService.getMemberName(memberId)
         return ApiResponse.ok(
-            _root_ide_package_.kr.spot.core.member.presentation.dto.response.GetMemberNameResponse.Companion
+            GetMemberNameResponse
                 .from(name)
         )
     }
@@ -40,10 +40,10 @@ class MemberController(
     @GetMapping("/info")
     fun getMemberInfo(
         @Parameter(hidden = true) @RequestHeader memberId: Long
-    ): ApiResponse<kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse> {
+    ): ApiResponse<GetMemberInfoResponse> {
         val member = memberQueryService.getMember(memberId)
         return ApiResponse.ok(
-            _root_ide_package_.kr.spot.core.member.presentation.dto.response.GetMemberInfoResponse.Companion.from(
+            GetMemberInfoResponse.from(
                 member
             )
         )
@@ -54,7 +54,7 @@ class MemberController(
     @Operation(summary = "회원 선호 카테고리 설정")
     @PostMapping("/prefer-categories")
     fun registerPreferCategories(
-        @RequestBody request: kr.spot.core.member.presentation.dto.request.RegisterPreferredCategoryRequest,
+        @RequestBody request: RegisterPreferredCategoryRequest,
         @RequestAttribute("memberId") memberId: Long
     ): ApiResponse<Unit> {
         memberCommandService.registerPreferCategories(memberId, request.categories)
@@ -74,7 +74,7 @@ class MemberController(
     @PutMapping("/me")
     fun updateMemberInfo(
         @RequestHeader memberId: Long,
-        @RequestBody updateMemberInfoRequest: kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+        @RequestBody updateMemberInfoRequest: UpdateMemberInfoRequest
     ): ApiResponse<Unit> {
         memberCommandService.updateProfile(memberId, updateMemberInfoRequest)
         return ApiResponse.ok()
@@ -85,11 +85,11 @@ class MemberController(
     @Operation(summary = "[테스트용] 회원 생성", description = "개발/테스트 환경에서 사용하는 회원 생성 API")
     @PostMapping("/test")
     fun createTestMember(
-        @RequestBody request: kr.spot.core.member.presentation.dto.request.CreateTestMemberRequest
-    ): ApiResponse<kr.spot.core.member.presentation.dto.response.CreateTestMemberResponse> {
+        @RequestBody request: CreateTestMemberRequest
+    ): ApiResponse<CreateTestMemberResponse> {
         val memberId = memberCommandService.createTestMember(request.name, request.email)
         return ApiResponse.created(
-            _root_ide_package_.kr.spot.core.member.presentation.dto.response.CreateTestMemberResponse(
+            CreateTestMemberResponse(
                 memberId
             )
         )

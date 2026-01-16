@@ -22,8 +22,7 @@ class PreferredCategory private constructor(
             id: Long,
             memberId: Long,
             category: String
-        ): kr.spot.core.member.domain.PreferredCategory =
-            _root_ide_package_.kr.spot.core.member.domain
-                .PreferredCategory(id, memberId, category)
+        ): PreferredCategory =
+            PreferredCategory(id, memberId, category)
     }
 }

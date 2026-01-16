@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class MemberCommandService(
     private val idGenerator: IdGenerator,
-    private val memberRepository: kr.spot.core.member.infrastructure.MemberRepository,
-    private val preferredCategoryRepository: kr.spot.core.member.infrastructure.PreferredCategoryRepository,
+    private val memberRepository: MemberRepository,
+    private val preferredCategoryRepository: PreferredCategoryRepository,
     private val eventPublisher: KafkaEventPublisher
 ) {
     /**
@@ -31,13 +31,13 @@ class MemberCommandService(
         email: String
     ): Long {
         val member =
-            _root_ide_package_.kr.spot.core.member.domain.Member.Companion.of(
+            Member.of(
                 id = idGenerator.nextId(),
                 email =
-                    _root_ide_package_.kr.spot.core.member.domain.vo.Email.Companion
+                    Email
                         .of(email),
                 name = name,
-                loginType = _root_ide_package_.kr.spot.core.member.domain.enums.LoginType.KAKAO, // 테스트용 기본값
+                loginType = LoginType.KAKAO, // 테스트용 기본값
                 profileImageUrl = null
             )
         return memberRepository.save(member).id
@@ -60,7 +60,7 @@ class MemberCommandService(
      */
     fun updateProfile(
         memberId: Long,
-        updateMemberInfoRequest: kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+        updateMemberInfoRequest: UpdateMemberInfoRequest
     ) {
         val member =
             memberRepository
@@ -96,7 +96,7 @@ class MemberCommandService(
         // 새로운 선호 카테고리 저장
         val preferredCategories =
             categories.map { category ->
-                _root_ide_package_.kr.spot.core.member.domain.PreferredCategory.Companion.of(
+                PreferredCategory.of(
                     id = idGenerator.nextId(),
                     memberId = memberId,
                     category = category
