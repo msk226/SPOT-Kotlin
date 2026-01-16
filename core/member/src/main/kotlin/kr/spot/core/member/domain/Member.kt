@@ -25,12 +25,12 @@ class Member private constructor(
     val id: Long,
     @Embedded
     @AttributeOverride(name = "value", column = Column(name = "email", nullable = false, unique = true))
-    val email: kr.spot.core.member.domain.vo.Email,
+    val email: Email,
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val loginType: kr.spot.core.member.domain.enums.LoginType,
+    val loginType: LoginType,
     @Column
     var profileImageUrl: String? = null
 ) : BaseEntity() {
@@ -55,15 +55,15 @@ class Member private constructor(
     companion object {
         fun of(
             id: Long,
-            email: kr.spot.core.member.domain.vo.Email,
+            email: Email,
             name: String,
-            loginType: kr.spot.core.member.domain.enums.LoginType,
+            loginType: LoginType,
             profileImageUrl: String? = null
-        ): kr.spot.core.member.domain.Member {
+        ): Member {
             require(name.isNotBlank()) {
                 throw GeneralException(ErrorStatus.NAME_CAN_NOT_NULL_OR_EMPTY)
             }
-            return _root_ide_package_.kr.spot.core.member.domain.Member(
+            return Member(
                 id,
                 email,
                 name,

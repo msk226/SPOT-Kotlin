@@ -13,7 +13,7 @@ data class Email(
     init {
         require(
             value.isNotBlank() &&
-                _root_ide_package_.kr.spot.core.member.domain.vo.Email.Companion.EMAIL_PATTERN
+                EMAIL_PATTERN
                     .matches(value)
         ) {
             throw GeneralException(ErrorStatus.INVALID_EMAIL_FORMAT)
@@ -23,8 +23,6 @@ data class Email(
     companion object {
         private val EMAIL_PATTERN = Regex("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
 
-        fun of(value: String): kr.spot.core.member.domain.vo.Email =
-            _root_ide_package_.kr.spot.core.member.domain.vo
-                .Email(value)
+        fun of(value: String): Email = Email(value)
     }
 }

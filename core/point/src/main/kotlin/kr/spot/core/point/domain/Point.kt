@@ -20,6 +20,10 @@ class Point private constructor(
     var amount: Long = amount
         private set
 
+    fun increaseAmount(amount: Long) {
+        this.amount += amount
+    }
+
     companion object {
         fun create(
             id: Long,

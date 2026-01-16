@@ -2,6 +2,7 @@ package kr.spot.core.member.application
 
 import kr.spot.common.api.exception.GeneralException
 import kr.spot.common.api.status.ErrorStatus
+import kr.spot.common.event.payload.MemberCreatedEvent
 import kr.spot.common.event.payload.MemberProfileUpdatedEvent
 import kr.spot.common.event.publisher.KafkaEventPublisher
 import kr.spot.common.id.IdGenerator
@@ -12,6 +13,7 @@ import kr.spot.core.member.domain.vo.Email
 import kr.spot.core.member.infrastructure.MemberRepository
 import kr.spot.core.member.infrastructure.PreferredCategoryRepository
 import kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class MemberCommandService(
     private val idGenerator: IdGenerator,
-    private val memberRepository: kr.spot.core.member.infrastructure.MemberRepository,
-    private val preferredCategoryRepository: kr.spot.core.member.infrastructure.PreferredCategoryRepository,
-    private val eventPublisher: KafkaEventPublisher
+    private val memberRepository: MemberRepository,
+    private val preferredCategoryRepository: PreferredCategoryRepository,
+    private val eventPublisher: KafkaEventPublisher,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) {
     /**
      * 테스트용 회원 생성
@@ -31,15 +34,16 @@ class MemberCommandService(
         email: String
     ): Long {
         val member =
-            _root_ide_package_.kr.spot.core.member.domain.Member.Companion.of(
+            Member.of(
                 id = idGenerator.nextId(),
                 email =
-                    _root_ide_package_.kr.spot.core.member.domain.vo.Email.Companion
+                    Email
                         .of(email),
                 name = name,
-                loginType = _root_ide_package_.kr.spot.core.member.domain.enums.LoginType.KAKAO, // 테스트용 기본값
+                loginType = LoginType.KAKAO, // 테스트용 기본값
                 profileImageUrl = null
             )
+        applicationEventPublisher.publishEvent(MemberCreatedEvent(member.id))
         return memberRepository.save(member).id
     }
 
@@ -60,7 +64,7 @@ class MemberCommandService(
      */
     fun updateProfile(
         memberId: Long,
-        updateMemberInfoRequest: kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+        updateMemberInfoRequest: UpdateMemberInfoRequest
     ) {
         val member =
             memberRepository
@@ -96,7 +100,7 @@ class MemberCommandService(
         // 새로운 선호 카테고리 저장
         val preferredCategories =
             categories.map { category ->
-                _root_ide_package_.kr.spot.core.member.domain.PreferredCategory.Companion.of(
+                PreferredCategory.of(
                     id = idGenerator.nextId(),
                     memberId = memberId,
                     category = category

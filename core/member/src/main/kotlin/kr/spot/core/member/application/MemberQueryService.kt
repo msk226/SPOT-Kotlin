@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class MemberQueryService(
-    private val memberRepository: kr.spot.core.member.infrastructure.MemberRepository
+    private val memberRepository: MemberRepository
 ) {
     /**
      * 회원 정보 조회
      */
-    fun getMember(memberId: Long): kr.spot.core.member.domain.Member = findByIdOrThrow(memberId)
+    fun getMember(memberId: Long): Member = findByIdOrThrow(memberId)
 
     /**
      * 회원 이름 조회
@@ -25,7 +25,7 @@ class MemberQueryService(
         return member.name
     }
 
-    fun findByIdOrThrow(id: Long): kr.spot.core.member.domain.Member =
+    fun findByIdOrThrow(id: Long): Member =
         memberRepository.findById(id).orElseThrow {
             GeneralException(ErrorStatus.MEMBER_NOT_FOUND)
         }

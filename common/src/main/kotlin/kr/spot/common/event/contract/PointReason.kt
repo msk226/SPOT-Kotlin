@@ -1,4 +1,4 @@
-package kr.spot.core.point.domain.enums
+package kr.spot.common.event.contract
 
 enum class PointReason {
     ATTENDANCE,

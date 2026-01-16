@@ -15,11 +15,11 @@ data class GetMemberInfoResponse(
     val memberId: Long,
     val nickname: String,
     val profileImageUrl: String?,
-    val loginType: kr.spot.core.member.domain.enums.LoginType,
+    val loginType: LoginType,
     val email: String
 ) {
     companion object {
-        fun from(member: kr.spot.core.member.domain.Member) =
+        fun from(member: Member) =
             GetMemberInfoResponse(
                 memberId = member.id,
                 nickname = member.name,
