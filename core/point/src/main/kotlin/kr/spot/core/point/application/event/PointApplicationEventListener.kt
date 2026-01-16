@@ -9,7 +9,7 @@ import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 
 @Component
-class PointEventListener (
+class PointApplicationEventListener (
     private val idGenerator: IdGenerator,
     private val pointRepository: PointRepository
 ){
