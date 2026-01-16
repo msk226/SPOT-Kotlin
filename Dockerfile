@@ -5,7 +5,9 @@ WORKDIR /app
 COPY . .
 
 ARG MODULE
-RUN ./gradlew :${MODULE}:bootJar --no-daemon
+# core/boot -> core:boot 형태로 변환하여 Gradle 명령어에 사용
+RUN MODULE_GRADLE=$(echo ${MODULE} | tr '/' ':') && \
+    ./gradlew :${MODULE_GRADLE}:bootJar --no-daemon
 
 # 런타임
 FROM eclipse-temurin:21-jre
