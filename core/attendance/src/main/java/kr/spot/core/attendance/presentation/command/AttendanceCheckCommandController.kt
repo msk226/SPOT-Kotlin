@@ -1,6 +1,7 @@
 package kr.spot.core.attendance.presentation.command
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
 import kr.spot.core.attendance.application.command.AttendanceCheckCommandService
@@ -19,6 +20,6 @@ class AttendanceCheckCommandController(
     @Operation(summary = "출석 체크")
     @PostMapping("/check-in")
     fun checkIn(
-        @RequestHeader memberId: Long
+        @RequestHeader @Parameter(hidden = true) memberId: Long
     ): ApiResponse<AttendanceCheckResult> = ApiResponse.ok(attendanceCheckCommandService.checkIn(memberId))
 }
