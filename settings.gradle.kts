@@ -11,6 +11,7 @@ include("core:member")
 include("core:notification")
 include("core:post")
 include("core:point")
+include("core:attendance")
 
 // study 하위 모듈
 include("study:boot")
