@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":core:notification"))
     implementation(project(":core:post"))
     implementation(project(":core:point"))
+    implementation(project(":core:attendance"))
 
     // Spring Web
     implementation("org.springframework.boot:spring-boot-starter-web")
