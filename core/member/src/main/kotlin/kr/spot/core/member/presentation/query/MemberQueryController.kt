@@ -48,5 +48,4 @@ class MemberQueryController(
     }
 
     // ==================== Command ====================
-
 }

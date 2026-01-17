@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "회원")
 @RestController
 @RequestMapping("/api/members")
-class MemberCommandController (
+class MemberCommandController(
     private val memberCommandService: MemberCommandService,
-){
+) {
     @Operation(summary = "회원 선호 카테고리 설정")
     @PostMapping("/prefer-categories")
     fun registerPreferCategories(

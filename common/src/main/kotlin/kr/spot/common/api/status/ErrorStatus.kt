@@ -74,6 +74,7 @@ enum class ErrorStatus(
     ATTENDANCE_NOT_STARTED(400, "ATTENDANCE4001", "출석체크가 시작되지 않았습니다."),
     ATTENDANCE_ALREADY_CHECKED(400, "ATTENDANCE4002", "이미 출석체크를 완료했습니다."),
     INVALID_ATTENDANCE_CODE(400, "ATTENDANCE4003", "유효하지 않은 출석 코드입니다."),
+    ATTENDANCE_STREAK_NOT_FOUND(404, "ATTENDANCE4040", "출석 연속 기록을 찾을 수 없습니다."),
 
     // 투두 관련
     TODO_NOT_FOUND(404, "TODO404", "투두를 찾을 수 없습니다."),
