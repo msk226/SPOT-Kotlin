@@ -95,6 +95,9 @@ enum class ErrorStatus(
     NOTIFICATION_PAYLOAD_MISSING_STUDY_ID(400, "NOTIFICATION4002", "알림 페이로드에 studyId가 필요합니다."),
     NOTIFICATION_TEMPLATE_NOT_FOUND(500, "NOTIFICATION5000", "알림 템플릿을 찾을 수 없습니다."),
     PUSH_NOTIFICATION_FAILED(500, "NOTIFICATION5001", "푸시 알림 발송에 실패했습니다."),
+
+    // 포인트 관련
+    POINT_NOT_FOUND( 404, "POINT404", "포인트 정보를 찾을 수 없습니다.")
     ;
 
     override val isSuccess: Boolean = false
