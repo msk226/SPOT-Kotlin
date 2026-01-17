@@ -24,6 +24,11 @@ class Point private constructor(
         this.amount += amount
     }
 
+    fun decreaseAmount(amount: Long) {
+        require(this.amount >= amount) { "잔액이 부족합니다. 현재: ${this.amount}, 차감: $amount" }
+        this.amount -= amount
+    }
+
     companion object {
         fun create(
             id: Long,
