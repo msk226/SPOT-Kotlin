@@ -12,7 +12,7 @@ import kr.spot.core.member.domain.enums.LoginType
 import kr.spot.core.member.domain.vo.Email
 import kr.spot.core.member.infrastructure.MemberRepository
 import kr.spot.core.member.infrastructure.PreferredCategoryRepository
-import kr.spot.core.member.presentation.dto.request.UpdateMemberInfoRequest
+import kr.spot.core.member.presentation.command.dto.request.UpdateMemberInfoRequest
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

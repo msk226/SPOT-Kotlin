@@ -20,7 +20,10 @@ enum class EventType(
     STUDY_APPLICATION_RECEIVED("study.application.received", Topics.STUDY_EVENTS),
 
     // Notification Events
-    NOTIFICATION_SEND("notification.send", Topics.NOTIFICATION_EVENTS);
+    NOTIFICATION_SEND("notification.send", Topics.NOTIFICATION_EVENTS),
+
+    // Attendance Events
+    ATTENDANCE_CHECKED("attendance.checked", Topics.ATTENDANCE_EVENTS);
 
     companion object {
         private val valueMap = entries.associateBy { it.value }

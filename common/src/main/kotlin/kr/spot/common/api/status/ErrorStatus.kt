@@ -74,6 +74,7 @@ enum class ErrorStatus(
     ATTENDANCE_NOT_STARTED(400, "ATTENDANCE4001", "출석체크가 시작되지 않았습니다."),
     ATTENDANCE_ALREADY_CHECKED(400, "ATTENDANCE4002", "이미 출석체크를 완료했습니다."),
     INVALID_ATTENDANCE_CODE(400, "ATTENDANCE4003", "유효하지 않은 출석 코드입니다."),
+    ATTENDANCE_STREAK_NOT_FOUND(404, "ATTENDANCE4040", "출석 연속 기록을 찾을 수 없습니다."),
 
     // 투두 관련
     TODO_NOT_FOUND(404, "TODO404", "투두를 찾을 수 없습니다."),
@@ -94,6 +95,9 @@ enum class ErrorStatus(
     NOTIFICATION_PAYLOAD_MISSING_STUDY_ID(400, "NOTIFICATION4002", "알림 페이로드에 studyId가 필요합니다."),
     NOTIFICATION_TEMPLATE_NOT_FOUND(500, "NOTIFICATION5000", "알림 템플릿을 찾을 수 없습니다."),
     PUSH_NOTIFICATION_FAILED(500, "NOTIFICATION5001", "푸시 알림 발송에 실패했습니다."),
+
+    // 포인트 관련
+    POINT_NOT_FOUND(404, "POINT404", "포인트 정보를 찾을 수 없습니다.")
     ;
 
     override val isSuccess: Boolean = false

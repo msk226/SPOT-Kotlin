@@ -1,4 +1,4 @@
-package kr.spot.core.member.presentation.dto.request
+package kr.spot.core.member.presentation.command.dto.request
 
 data class UpdateMemberInfoRequest(
     val name: String?,

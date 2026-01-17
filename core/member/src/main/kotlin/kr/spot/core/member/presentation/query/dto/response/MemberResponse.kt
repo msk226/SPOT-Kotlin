@@ -1,4 +1,4 @@
-package kr.spot.core.member.presentation.dto.response
+package kr.spot.core.member.presentation.query.dto.response
 
 import kr.spot.core.member.domain.Member
 import kr.spot.core.member.domain.enums.LoginType

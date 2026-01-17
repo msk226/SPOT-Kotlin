@@ -25,7 +25,7 @@ class PointHistory private constructor(
     val points: Long,
     @Enumerated(EnumType.STRING)
     val reason: PointReason,
-    val referenceId: Long,
+    val referenceId: Long?,
     val grantedAt: LocalDateTime
 ) : BaseEntity() {
     companion object {
@@ -35,7 +35,7 @@ class PointHistory private constructor(
             memberId: Long,
             points: Long,
             reason: PointReason,
-            referenceId: Long,
+            referenceId: Long?,
             grantedAt: LocalDateTime
         ): PointHistory =
             PointHistory(
