@@ -15,14 +15,13 @@ import java.time.LocalDate
 
 @Service
 @Transactional
-class AttendanceCheckCommandService (
+class AttendanceCheckCommandService(
     private val idGenerator: IdGenerator,
     private val attendanceCheckRepository: AttendanceCheckRepository,
     private val attendanceStreakRepository: AttendanceStreakRepository,
     private val applicationEventPublisher: ApplicationEventPublisher
-){
-
-    fun checkIn(memberId: Long) : AttendanceCheckResult {
+) {
+    fun checkIn(memberId: Long): AttendanceCheckResult {
         val today = LocalDate.now()
 
         if (attendanceCheckRepository.existsByMemberIdAndCheckDate(memberId, today)) {

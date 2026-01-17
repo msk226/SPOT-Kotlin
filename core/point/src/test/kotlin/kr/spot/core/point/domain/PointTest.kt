@@ -7,11 +7,9 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Point 도메인")
 class PointTest {
-
     @Nested
     @DisplayName("create 메서드는")
     inner class Create {
-
         @Test
         fun `초기 amount가 0인 Point를 생성한다`() {
             // when
@@ -27,7 +25,6 @@ class PointTest {
     @Nested
     @DisplayName("increaseAmount 메서드는")
     inner class IncreaseAmount {
-
         @Test
         fun `amount를 증가시킨다`() {
             // given

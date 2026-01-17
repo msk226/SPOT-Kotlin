@@ -1,11 +1,9 @@
 package kr.spot.core.point.application.event
 
-import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -30,7 +28,6 @@ import java.time.LocalDate
 @ExtendWith(MockKExtension::class)
 @DisplayName("PointApplicationEventListener")
 class PointApplicationEventListenerTest {
-
     @MockK
     private lateinit var idGenerator: IdGenerator
 
@@ -46,7 +43,6 @@ class PointApplicationEventListenerTest {
     @Nested
     @DisplayName("registerPoint 메서드는")
     inner class RegisterPoint {
-
         @Test
         fun `MemberCreatedEvent 수신 시 Point를 생성한다`() {
             // given
@@ -70,18 +66,18 @@ class PointApplicationEventListenerTest {
     @Nested
     @DisplayName("handleAttendanceChecked 메서드는")
     inner class HandleAttendanceChecked {
-
         @Test
         fun `출석 체크 이벤트 수신 시 일일 출석 포인트를 지급한다`() {
             // given
             val memberId = 1L
             val point = Point.create(id = 1L, memberId = memberId)
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 1,
-                milestone = null
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns false
@@ -101,12 +97,13 @@ class PointApplicationEventListenerTest {
             // given
             val memberId = 1L
             val point = Point.create(id = 1L, memberId = memberId)
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 7,
-                milestone = StreakMileStone.ONE_WEEK
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 7,
+                    milestone = StreakMileStone.ONE_WEEK
+                )
             val historySlots = mutableListOf<PointHistory>()
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
@@ -133,12 +130,13 @@ class PointApplicationEventListenerTest {
             // given
             val memberId = 1L
             val point = Point.create(id = 1L, memberId = memberId)
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 14,
-                milestone = StreakMileStone.TWO_WEEKS
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 14,
+                    milestone = StreakMileStone.TWO_WEEKS
+                )
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns false
@@ -156,12 +154,13 @@ class PointApplicationEventListenerTest {
         fun `Point가 없는 경우 예외를 던진다`() {
             // given
             val memberId = 1L
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 1,
-                milestone = null
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns null
 
@@ -175,12 +174,13 @@ class PointApplicationEventListenerTest {
             // given
             val memberId = 1L
             val point = Point.create(id = 1L, memberId = memberId)
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 1,
-                milestone = null
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns true
@@ -198,12 +198,13 @@ class PointApplicationEventListenerTest {
             // given
             val memberId = 1L
             val point = Point.create(id = 1L, memberId = memberId)
-            val event = AttendanceCheckedEvent(
-                memberId = memberId,
-                checkedDate = LocalDate.now(),
-                currentStreak = 7,
-                milestone = StreakMileStone.ONE_WEEK
-            )
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 7,
+                    milestone = StreakMileStone.ONE_WEEK
+                )
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(event.eventId) } returns false

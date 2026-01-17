@@ -19,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 @DisplayName("AttendanceApplicationEventListener")
 class AttendanceApplicationEventListenerTest {
-
     @MockK
     private lateinit var idGenerator: IdGenerator
 
@@ -32,7 +31,6 @@ class AttendanceApplicationEventListenerTest {
     @Nested
     @DisplayName("registerAttendanceStreak 메서드는")
     inner class RegisterAttendanceStreak {
-
         @Test
         fun `MemberCreatedEvent 수신 시 AttendanceStreak을 생성한다`() {
             // given

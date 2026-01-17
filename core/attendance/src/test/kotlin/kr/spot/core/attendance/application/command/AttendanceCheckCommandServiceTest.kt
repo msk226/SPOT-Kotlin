@@ -29,7 +29,6 @@ import java.time.LocalDate
 @ExtendWith(MockKExtension::class)
 @DisplayName("AttendanceCheckCommandService")
 class AttendanceCheckCommandServiceTest {
-
     @MockK
     private lateinit var idGenerator: IdGenerator
 
@@ -48,7 +47,6 @@ class AttendanceCheckCommandServiceTest {
     @Nested
     @DisplayName("checkIn 메서드는")
     inner class CheckIn {
-
         @Test
         fun `출석 체크 성공 시 AttendanceCheckResult를 반환한다`() {
             // given

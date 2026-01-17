@@ -9,11 +9,9 @@ import java.time.LocalDate
 
 @DisplayName("AttendanceStreak 도메인")
 class AttendanceStreakTest {
-
     @Nested
     @DisplayName("create 메서드는")
     inner class Create {
-
         @Test
         fun `초기 상태의 AttendanceStreak을 생성한다`() {
             // when
@@ -31,11 +29,9 @@ class AttendanceStreakTest {
     @Nested
     @DisplayName("recordAttendance 메서드는")
     inner class RecordAttendance {
-
         @Nested
         @DisplayName("첫 출석일 때")
         inner class WhenFirstAttendance {
-
             @Test
             fun `currentStreak을 1로 설정한다`() {
                 // given
@@ -55,7 +51,6 @@ class AttendanceStreakTest {
         @Nested
         @DisplayName("연속 출석일 때")
         inner class WhenConsecutiveAttendance {
-
             @Test
             fun `currentStreak을 1 증가시킨다`() {
                 // given
@@ -93,7 +88,6 @@ class AttendanceStreakTest {
         @Nested
         @DisplayName("같은 날 중복 출석일 때")
         inner class WhenSameDayAttendance {
-
             @Test
             fun `null을 반환하고 streak을 변경하지 않는다`() {
                 // given
@@ -113,7 +107,6 @@ class AttendanceStreakTest {
         @Nested
         @DisplayName("연속 출석이 끊겼을 때")
         inner class WhenStreakBroken {
-
             @Test
             fun `currentStreak을 1로 리셋한다`() {
                 // given
@@ -148,7 +141,6 @@ class AttendanceStreakTest {
         @Nested
         @DisplayName("마일스톤 달성 시")
         inner class WhenMilestoneAchieved {
-
             @Test
             fun `7일 연속 출석 시 ONE_WEEK을 반환한다`() {
                 // given

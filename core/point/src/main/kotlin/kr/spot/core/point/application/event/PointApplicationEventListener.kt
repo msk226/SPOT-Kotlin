@@ -28,7 +28,6 @@ class PointApplicationEventListener(
         private const val STREAK_14_DAYS_POINTS = 100L
     }
 
-
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun registerPoint(event: MemberCreatedEvent) {
         pointRepository.save(
@@ -41,23 +40,26 @@ class PointApplicationEventListener(
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     fun handleAttendanceChecked(event: AttendanceCheckedEvent) {
-        val point = pointRepository.findWithLockByMemberId(event.memberId)
-            ?: throw GeneralException(ErrorStatus.POINT_NOT_FOUND)
+        val point =
+            pointRepository.findWithLockByMemberId(event.memberId)
+                ?: throw GeneralException(ErrorStatus.POINT_NOT_FOUND)
 
         grantPoints(
             point,
             event.eventId,
             event.memberId,
             DAILY_ATTENDANCE_POINTS,
-            PointReason.ATTENDANCE)
+            PointReason.ATTENDANCE
+        )
 
         event.milestone?.let { milestone ->
-            val (bonusPoints, reason) = when (milestone) {
-                StreakMileStone.ONE_WEEK ->
-                    STREAK_7_DAYS_POINTS to PointReason.ATTENDANCE_STREAK_FOR_7_DAYS
-                StreakMileStone.TWO_WEEKS ->
-                    STREAK_14_DAYS_POINTS to PointReason.ATTENDANCE_STREAK_FOR_14_DAYS
-            }
+            val (bonusPoints, reason) =
+                when (milestone) {
+                    StreakMileStone.ONE_WEEK ->
+                        STREAK_7_DAYS_POINTS to PointReason.ATTENDANCE_STREAK_FOR_7_DAYS
+                    StreakMileStone.TWO_WEEKS ->
+                        STREAK_14_DAYS_POINTS to PointReason.ATTENDANCE_STREAK_FOR_14_DAYS
+                }
 
             grantPoints(
                 point = point,
@@ -67,8 +69,6 @@ class PointApplicationEventListener(
                 reason = reason
             )
         }
-
-
     }
 
     private fun grantPoints(
@@ -78,8 +78,9 @@ class PointApplicationEventListener(
         amount: Long,
         reason: PointReason
     ) {
-        if (pointHistoryRepository.existsByEventId(eventId))
-            return;
+        if (pointHistoryRepository.existsByEventId(eventId)) {
+            return
+        }
 
         point.increaseAmount(amount)
         pointHistoryRepository.save(
@@ -94,5 +95,4 @@ class PointApplicationEventListener(
             )
         )
     }
-
 }

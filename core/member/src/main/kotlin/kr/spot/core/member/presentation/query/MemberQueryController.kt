@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.spot.common.api.ApiResponse
-import kr.spot.core.member.application.MemberCommandService
 import kr.spot.core.member.application.MemberQueryService
 import kr.spot.core.member.presentation.query.dto.response.GetMemberInfoResponse
 import kr.spot.core.member.presentation.query.dto.response.GetMemberNameResponse
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/members")
 class MemberQueryController(
-    private val memberCommandService: MemberCommandService,
     private val memberQueryService: MemberQueryService
 ) {
     // ==================== Query ====================

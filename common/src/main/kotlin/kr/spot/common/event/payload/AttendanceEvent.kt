@@ -5,11 +5,18 @@ import kr.spot.common.event.EventType
 import kr.spot.common.event.contract.StreakMileStone
 import java.time.LocalDate
 
-data class AttendanceCheckedEvent (
+data class AttendanceCheckedEvent(
     val memberId: Long,
     val checkedDate: LocalDate,
     val currentStreak: Int,
     val milestone: StreakMileStone?,
+) : DomainEvent() {
+    override val eventType: EventType = EventType.ATTENDANCE_CHECKED
+}
+
+data class AttendanceCheckFailedEvent(
+    val memberId: Long,
+    val reason: String
 ) : DomainEvent() {
     override val eventType: EventType = EventType.ATTENDANCE_CHECKED
 }

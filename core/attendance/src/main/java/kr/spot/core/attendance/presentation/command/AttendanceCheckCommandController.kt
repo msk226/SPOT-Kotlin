@@ -13,15 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "출석 체크")
 @RestController
 @RequestMapping("/api/attendances")
-class AttendanceCheckCommandController (
+class AttendanceCheckCommandController(
     private val attendanceCheckCommandService: AttendanceCheckCommandService
-){
-
+) {
     @Operation(summary = "출석 체크")
     @PostMapping("/check-in")
-    fun checkIn (
+    fun checkIn(
         @RequestHeader memberId: Long
-    ): ApiResponse<AttendanceCheckResult>{
-            return ApiResponse.ok(attendanceCheckCommandService.checkIn(memberId))
-        }
+    ): ApiResponse<AttendanceCheckResult> = ApiResponse.ok(attendanceCheckCommandService.checkIn(memberId))
 }
