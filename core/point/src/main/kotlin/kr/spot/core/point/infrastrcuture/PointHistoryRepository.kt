@@ -21,4 +21,17 @@ interface PointHistoryRepository : JpaRepository<PointHistory, Long> {
         @Param("now") now: LocalDateTime,
         @Param("pointStatus") pointStatus: PointStatus
     ): List<PointHistory>
+
+    @Query(
+        """
+        SELECT ph FROM PointHistory ph
+        WHERE ph.expiredAt BETWEEN :startDate AND :endDate
+        AND ph.pointStatus = :pointStatus
+        """
+    )
+    fun findAllByExpiredAtBetweenAndPointStatus(
+        @Param("startDate") startDate: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime,
+        @Param("pointStatus") pointStatus: PointStatus
+    ): List<PointHistory>
 }

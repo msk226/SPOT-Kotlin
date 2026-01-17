@@ -19,5 +19,6 @@ enum class NotificationType {
     STUDY_REJECTED,
     NEW_POST,
     NEW_COMMENT,
-    SYSTEM
+    SYSTEM,
+    POINT_EXPIRATION
 }

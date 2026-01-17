@@ -27,8 +27,5 @@ enum class EventType(
 
     companion object {
         private val valueMap = entries.associateBy { it.value }
-
-        fun fromValue(value: String): EventType =
-            valueMap[value] ?: throw IllegalArgumentException("Unknown event type: $value")
     }
 }

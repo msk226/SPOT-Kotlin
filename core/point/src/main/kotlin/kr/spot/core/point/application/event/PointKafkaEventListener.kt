@@ -1,6 +1,7 @@
 package kr.spot.core.point.application.event
 
 import jakarta.transaction.Transactional
+import kr.spot.common.event.Topics
 import kr.spot.common.event.consumer.AbstractEventConsumer
 import kr.spot.common.event.metrics.EventMetrics
 import kr.spot.common.event.payload.PointGrantedEvent
@@ -26,7 +27,7 @@ class PointKafkaEventListener(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    @KafkaListener(topics = ["point-granted"], groupId = "core-point")
+    @KafkaListener(topics = [Topics.POINT_EVENTS], groupId = "core-point")
     fun onPointGranted(record: ConsumerRecord<String, PointGrantedEvent>) {
         processWithMetrics(record, ::handlePointGranted)
     }
