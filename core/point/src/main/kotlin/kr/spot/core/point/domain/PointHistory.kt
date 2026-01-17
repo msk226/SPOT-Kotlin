@@ -26,9 +26,23 @@ class PointHistory private constructor(
     @Enumerated(EnumType.STRING)
     val reason: PointReason,
     val referenceId: Long?,
-    val grantedAt: LocalDateTime
+    val grantedAt: LocalDateTime,
+    @Column(name = "expired_at", nullable = false)
+    val expiredAt: LocalDateTime,
+    pointStatus: PointStatus
 ) : BaseEntity() {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "point_status", nullable = false)
+    var pointStatus: PointStatus = pointStatus
+        private set
+
+    fun expire() {
+        this.pointStatus = PointStatus.EXPIRED
+    }
+
     companion object {
+        private const val EXPIRATION_YEARS = 1L
+
         fun of(
             id: Long,
             eventId: String,
@@ -45,7 +59,9 @@ class PointHistory private constructor(
                 points = points,
                 reason = reason,
                 referenceId = referenceId,
-                grantedAt = grantedAt
+                grantedAt = grantedAt,
+                expiredAt = grantedAt.plusYears(EXPIRATION_YEARS),
+                pointStatus = PointStatus.ACTIVE
             )
     }
 }
