@@ -16,4 +16,8 @@ dependencies {
 
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
+
+    // Test
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("org.assertj:assertj-core:3.26.3")
 }
