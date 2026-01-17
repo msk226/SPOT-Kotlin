@@ -10,9 +10,11 @@ import kr.spot.core.attendance.infrastructure.AttendanceStreakRepository
 import kr.spot.core.attendance.presentation.command.dto.AttendanceCheckResult
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
+@Transactional
 class AttendanceCheckCommandService (
     private val idGenerator: IdGenerator,
     private val attendanceCheckRepository: AttendanceCheckRepository,

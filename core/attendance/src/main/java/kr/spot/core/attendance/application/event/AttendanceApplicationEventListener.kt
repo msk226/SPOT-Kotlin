@@ -1,5 +1,6 @@
 package kr.spot.core.attendance.application.event
 
+import kr.spot.common.event.payload.MemberCreatedEvent
 import kr.spot.common.id.IdGenerator
 import kr.spot.core.attendance.domain.AttendanceStreak
 import kr.spot.core.attendance.infrastructure.AttendanceStreakRepository
@@ -13,11 +14,11 @@ class AttendanceApplicationEventListener(
     private val attendanceStreakRepository: AttendanceStreakRepository
 ) {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    fun registerAttendanceStreak(memberId: Long) {
+    fun registerAttendanceStreak(event: MemberCreatedEvent) {
         val attendanceStreak =
             AttendanceStreak.create(
                 id = idGenerator.nextId(),
-                memberId = memberId
+                memberId = event.memberId
             )
         attendanceStreakRepository.save(attendanceStreak)
     }

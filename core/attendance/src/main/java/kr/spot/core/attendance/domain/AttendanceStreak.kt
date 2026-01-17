@@ -64,7 +64,7 @@ class AttendanceStreak private constructor(
     ): StreakMileStone? =
         when {
             previous < 7 && current >= 7 -> StreakMileStone.ONE_WEEK
-            previous < 30 && current >= 30 -> StreakMileStone.TWO_WEEKS
+            previous < 14 && current >= 14 -> StreakMileStone.TWO_WEEKS
             else -> null
         }
 
