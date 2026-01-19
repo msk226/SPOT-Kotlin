@@ -24,7 +24,6 @@ import java.time.LocalDateTime
 @ExtendWith(MockKExtension::class)
 @DisplayName("PointExpirationNotifyScheduler")
 class PointExpirationNotifySchedulerTest {
-
     @MockK
     private lateinit var pointHistoryRepository: PointHistoryRepository
 
@@ -37,7 +36,6 @@ class PointExpirationNotifySchedulerTest {
     @Nested
     @DisplayName("notifyPointExpiration 메서드는")
     inner class NotifyPointExpiration {
-
         @Test
         fun `만료 예정 포인트가 없으면 알림을 발송하지 않는다`() {
             // given
@@ -56,11 +54,12 @@ class PointExpirationNotifySchedulerTest {
         fun `만료 예정 포인트가 있으면 해당 회원에게 알림을 발송한다`() {
             // given
             val memberId = 1L
-            val expiringHistory = createPointHistory(
-                id = 1L,
-                memberId = memberId,
-                points = 100L
-            )
+            val expiringHistory =
+                createPointHistory(
+                    id = 1L,
+                    memberId = memberId,
+                    points = 100L
+                )
 
             every {
                 pointHistoryRepository.findAllByExpiredAtBetweenAndPointStatus(any(), any(), PointStatus.ACTIVE)
@@ -190,8 +189,8 @@ class PointExpirationNotifySchedulerTest {
         id: Long,
         memberId: Long,
         points: Long
-    ): PointHistory {
-        return PointHistory.of(
+    ): PointHistory =
+        PointHistory.of(
             id = id,
             eventId = "test-event-$id",
             memberId = memberId,
@@ -200,5 +199,4 @@ class PointExpirationNotifySchedulerTest {
             referenceId = null,
             grantedAt = LocalDateTime.now().minusMonths(11) // 1개월 후 만료 예정
         )
-    }
 }

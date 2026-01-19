@@ -3,6 +3,7 @@ services:
     image: confluentinc/cp-kafka:7.6.1
     container_name: spot-kafka
     environment:
+      TZ: Asia/Seoul
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
@@ -28,6 +29,7 @@ services:
     ports:
       - "3306:3306"
     environment:
+      TZ: Asia/Seoul
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME_CORE}
     volumes:
@@ -42,6 +44,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: spot-redis
+    environment:
+      TZ: Asia/Seoul
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -59,6 +63,7 @@ services:
     env_file:
       - ./.env
     environment:
+      TZ: Asia/Seoul
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_CORE}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
@@ -80,6 +85,7 @@ services:
     env_file:
       - ./.env
     environment:
+      TZ: Asia/Seoul
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_STUDY}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
@@ -108,6 +114,7 @@ services:
     env_file:
       - ./.env
     environment:
+      TZ: Asia/Seoul
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${DB_NAME_WORKER}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}

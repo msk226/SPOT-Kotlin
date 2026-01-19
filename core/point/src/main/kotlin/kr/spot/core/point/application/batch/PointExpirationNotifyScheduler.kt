@@ -33,11 +33,12 @@ class PointExpirationNotifyScheduler(
 
         log.info("[PointExpirationNotify] 알림 발송 시작 - 만료 예정일: {}", targetDate.toLocalDate())
 
-        val expiringHistories = pointHistoryRepository.findAllByExpiredAtBetweenAndPointStatus(
-            startDate = targetDate.toLocalDate().atStartOfDay(),
-            endDate = targetDate.toLocalDate().atTime(23, 59, 59),
-            pointStatus = PointStatus.ACTIVE
-        )
+        val expiringHistories =
+            pointHistoryRepository.findAllByExpiredAtBetweenAndPointStatus(
+                startDate = targetDate.toLocalDate().atStartOfDay(),
+                endDate = targetDate.toLocalDate().atTime(23, 59, 59),
+                pointStatus = PointStatus.ACTIVE
+            )
 
         if (expiringHistories.isEmpty()) {
             log.info("[PointExpirationNotify] 만료 예정 포인트 없음")
@@ -51,13 +52,14 @@ class PointExpirationNotifyScheduler(
 
             kafkaEventPublisher.publish(
                 key = memberId.toString(),
-                event = NotificationEvent(
-                    targetMemberId = memberId,
-                    title = "포인트 만료 예정 알림",
-                    content = "${totalExpiringPoints}P가 ${targetDate.toLocalDate()}에 만료됩니다.",
-                    notificationType = NotificationType.POINT_EXPIRATION,
-                    referenceId = null
-                )
+                event =
+                    NotificationEvent(
+                        targetMemberId = memberId,
+                        title = "포인트 만료 예정 알림",
+                        content = "${totalExpiringPoints}P가 ${targetDate.toLocalDate()}에 만료됩니다.",
+                        notificationType = NotificationType.POINT_EXPIRATION,
+                        referenceId = null
+                    )
             )
         }
 

@@ -5,6 +5,9 @@ spring:
   application:
     name: spot-worker
 
+  jackson:
+    time-zone: Asia/Seoul
+
   datasource:
     url: jdbc:mysql://localhost:3306/spot_worker
     username: root
