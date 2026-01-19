@@ -22,3 +22,4 @@ include("study:todo")
 
 // worker 하위 모듈
 include("worker:boot")
+include("worker:admin")
