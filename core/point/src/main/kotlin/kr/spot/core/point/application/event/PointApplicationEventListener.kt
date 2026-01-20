@@ -11,6 +11,7 @@ import kr.spot.core.point.domain.Point
 import kr.spot.core.point.domain.PointHistory
 import kr.spot.core.point.infrastrcuture.PointHistoryRepository
 import kr.spot.core.point.infrastrcuture.PointRepository
+import kr.spot.core.point.infrastrcuture.querydsl.PointCustomRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -20,9 +21,11 @@ import java.time.LocalDateTime
 class PointApplicationEventListener(
     private val idGenerator: IdGenerator,
     private val pointRepository: PointRepository,
-    private val pointHistoryRepository: PointHistoryRepository
+    private val pointHistoryRepository: PointHistoryRepository,
+    private val pointCustomRepository: PointCustomRepository
 ) {
     companion object {
+        private const val DAILY_MAX_POINTS = 100L
         private const val DAILY_ATTENDANCE_POINTS = 10L
         private const val STREAK_7_DAYS_POINTS = 50L
         private const val STREAK_14_DAYS_POINTS = 100L
@@ -82,6 +85,23 @@ class PointApplicationEventListener(
             return
         }
 
+        val gainedPointsToday = pointCustomRepository.getGainedPointsToday(memberId, LocalDateTime.now())
+
+        if (gainedPointsToday >= DAILY_MAX_POINTS) {
+            return
+        }
+
+        val allowedAmount = minOf(amount, DAILY_MAX_POINTS - gainedPointsToday)
+        increasePointAndSave(point, allowedAmount, eventId, memberId, reason)
+    }
+
+    private fun increasePointAndSave(
+        point: Point,
+        amount: Long,
+        eventId: String,
+        memberId: Long,
+        reason: PointReason
+    ) {
         point.increaseAmount(amount)
         pointHistoryRepository.save(
             PointHistory.of(
