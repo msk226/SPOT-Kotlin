@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kr.spot.common.event.EventType
 import kr.spot.common.event.Topics
+import kr.spot.worker.admin.sse.DashboardStatsUpdatedEvent
+import kr.spot.worker.admin.sse.StatsEventType
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.StreamsBuilder
@@ -15,13 +17,16 @@ import org.apache.kafka.streams.kstream.TimeWindows
 import org.apache.kafka.streams.state.WindowStore
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Component
-class DashboardStatsProcessor {
+class DashboardStatsProcessor(
+    private val eventPublisher: ApplicationEventPublisher
+) {
     private val log = LoggerFactory.getLogger(javaClass)
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
@@ -63,6 +68,7 @@ class DashboardStatsProcessor {
             ).toStream()
             .foreach { key, count ->
                 log.debug("Member daily count updated: {} = {}", key.key(), count)
+                publishEvent(StatsEventType.MEMBER_CREATED)
             }
     }
 
@@ -86,6 +92,7 @@ class DashboardStatsProcessor {
             ).toStream()
             .foreach { key, count ->
                 log.debug("Attendance daily count updated: {} = {}", key.key(), count)
+                publishEvent(StatsEventType.ATTENDANCE_CHECKED)
             }
 
         // 시간대별 출석 수
@@ -140,7 +147,16 @@ class DashboardStatsProcessor {
             ).toStream()
             .foreach { key, sum ->
                 log.debug("Point daily sum updated: {} = {}", key.key(), sum)
+                publishEvent(StatsEventType.POINT_GRANTED)
             }
+    }
+
+    private fun publishEvent(eventType: StatsEventType) {
+        try {
+            eventPublisher.publishEvent(DashboardStatsUpdatedEvent(eventType))
+        } catch (e: Exception) {
+            log.warn("Failed to publish SSE event: {}", e.message)
+        }
     }
 
     private fun isEventType(
