@@ -1,5 +1,6 @@
 package kr.spot.core.post.infrastructure.redis
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.Cursor
 import org.springframework.data.redis.core.RedisCallback
@@ -8,7 +9,6 @@ import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
 
 @Component
 class PostViewFlushJob(
@@ -16,18 +16,9 @@ class PostViewFlushJob(
     private val postViewFlusher: PostViewFlusher
 ) {
     @Scheduled(cron = "0 * * * * *")
+    @SchedulerLock(name = "postViewFlushJob", lockAtMostFor = "PT5M")
     fun flush() {
-        if (!tryAcquireLock()) {
-            log
-                .debug("다른 인스턴스에서 실행 중")
-            return
-        }
-
-        try {
-            executeBatch()
-        } finally {
-            releaseLock()
-        }
+        executeBatch()
     }
 
     private fun executeBatch() {
@@ -155,23 +146,6 @@ class PostViewFlushJob(
         }
     }
 
-    private fun tryAcquireLock(): Boolean {
-        val acquired =
-            redis
-                .opsForValue()
-                .setIfAbsent(
-                    LOCK_KEY,
-                    "1",
-                    55,
-                    TimeUnit.SECONDS
-                )
-        return acquired == true
-    }
-
-    private fun releaseLock() {
-        redis.delete(LOCK_KEY)
-    }
-
     private fun parseLong(value: String): Long =
         try {
             value.toLong()
@@ -221,6 +195,5 @@ class PostViewFlushJob(
 
         private const val KEY_PREFIX = "view:post:"
         private const val KEY_PATTERN = "$KEY_PREFIX*"
-        private const val LOCK_KEY = "lock:view-flush"
     }
 }
