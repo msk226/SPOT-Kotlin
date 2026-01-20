@@ -17,6 +17,7 @@ import kr.spot.core.point.domain.Point
 import kr.spot.core.point.domain.PointHistory
 import kr.spot.core.point.infrastrcuture.PointHistoryRepository
 import kr.spot.core.point.infrastrcuture.PointRepository
+import kr.spot.core.point.infrastrcuture.querydsl.PointCustomRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -36,6 +37,9 @@ class PointApplicationEventListenerTest {
 
     @MockK
     private lateinit var pointHistoryRepository: PointHistoryRepository
+
+    @MockK
+    private lateinit var pointCustomRepository: PointCustomRepository
 
     @InjectMockKs
     private lateinit var sut: PointApplicationEventListener
@@ -81,6 +85,7 @@ class PointApplicationEventListenerTest {
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns false
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 0L
             every { idGenerator.nextId() } returns 100L
             every { pointHistoryRepository.save(any()) } returns mockk<PointHistory>()
 
@@ -108,6 +113,7 @@ class PointApplicationEventListenerTest {
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns false
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 0L
             every { idGenerator.nextId() } returnsMany listOf(100L, 101L)
             every { pointHistoryRepository.save(capture(historySlots)) } returns mockk<PointHistory>()
 
@@ -140,6 +146,8 @@ class PointApplicationEventListenerTest {
 
             every { pointRepository.findWithLockByMemberId(memberId) } returns point
             every { pointHistoryRepository.existsByEventId(any()) } returns false
+            // 첫 번째 지급 후 10P, 두 번째 지급 시 이미 10P 받은 상태
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returnsMany listOf(0L, 10L)
             every { idGenerator.nextId() } returnsMany listOf(100L, 101L)
             every { pointHistoryRepository.save(any()) } returns mockk<PointHistory>()
 
@@ -147,7 +155,7 @@ class PointApplicationEventListenerTest {
             sut.handleAttendanceChecked(event)
 
             // then
-            assertThat(point.amount).isEqualTo(110L) // 10 + 100
+            assertThat(point.amount).isEqualTo(100L) // 10P + 90P (100P 제한으로 100P 중 90P만)
         }
 
         @Test
@@ -211,6 +219,7 @@ class PointApplicationEventListenerTest {
             every {
                 pointHistoryRepository.existsByEventId("${event.eventId}-one_week")
             } returns true
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 0L
             every { idGenerator.nextId() } returns 100L
             every { pointHistoryRepository.save(any()) } returns mockk<PointHistory>()
 
@@ -220,6 +229,92 @@ class PointApplicationEventListenerTest {
             // then
             assertThat(point.amount).isEqualTo(10L) // 일일 포인트만
             verify(exactly = 1) { pointHistoryRepository.save(any()) }
+        }
+    }
+
+    @Nested
+    @DisplayName("하루 최대 100P 제한은")
+    inner class DailyMaxPointsLimit {
+        @Test
+        fun `오늘 이미 100P를 받은 경우 포인트를 지급하지 않는다`() {
+            // given
+            val memberId = 1L
+            val point = Point.create(id = 1L, memberId = memberId)
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
+
+            every { pointRepository.findWithLockByMemberId(memberId) } returns point
+            every { pointHistoryRepository.existsByEventId(any()) } returns false
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 100L
+
+            // when
+            sut.handleAttendanceChecked(event)
+
+            // then
+            assertThat(point.amount).isEqualTo(0L)
+            verify(exactly = 0) { pointHistoryRepository.save(any()) }
+        }
+
+        @Test
+        fun `지급하면 100P를 초과하는 경우 남은 만큼만 지급한다`() {
+            // given
+            val memberId = 1L
+            val point = Point.create(id = 1L, memberId = memberId)
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
+            val historySlot = slot<PointHistory>()
+
+            every { pointRepository.findWithLockByMemberId(memberId) } returns point
+            every { pointHistoryRepository.existsByEventId(any()) } returns false
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 95L
+            every { idGenerator.nextId() } returns 100L
+            every { pointHistoryRepository.save(capture(historySlot)) } returns mockk<PointHistory>()
+
+            // when
+            sut.handleAttendanceChecked(event)
+
+            // then
+            assertThat(point.amount).isEqualTo(5L) // 100 - 95 = 5P만 지급
+            assertThat(historySlot.captured.points).isEqualTo(5L)
+            verify(exactly = 1) { pointHistoryRepository.save(any()) }
+        }
+
+        @Test
+        fun `오늘 90P를 받은 상태에서 10P 지급 요청 시 10P 전액 지급한다`() {
+            // given
+            val memberId = 1L
+            val point = Point.create(id = 1L, memberId = memberId)
+            val event =
+                AttendanceCheckedEvent(
+                    memberId = memberId,
+                    checkedDate = LocalDate.now(),
+                    currentStreak = 1,
+                    milestone = null
+                )
+            val historySlot = slot<PointHistory>()
+
+            every { pointRepository.findWithLockByMemberId(memberId) } returns point
+            every { pointHistoryRepository.existsByEventId(any()) } returns false
+            every { pointCustomRepository.getGainedPointsToday(memberId, any()) } returns 90L
+            every { idGenerator.nextId() } returns 100L
+            every { pointHistoryRepository.save(capture(historySlot)) } returns mockk<PointHistory>()
+
+            // when
+            sut.handleAttendanceChecked(event)
+
+            // then
+            assertThat(point.amount).isEqualTo(10L)
+            assertThat(historySlot.captured.points).isEqualTo(10L)
         }
     }
 }

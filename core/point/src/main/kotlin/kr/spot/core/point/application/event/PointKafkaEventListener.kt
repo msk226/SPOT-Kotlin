@@ -9,22 +9,29 @@ import kr.spot.common.id.IdGenerator
 import kr.spot.core.point.domain.PointHistory
 import kr.spot.core.point.infrastrcuture.PointHistoryRepository
 import kr.spot.core.point.infrastrcuture.PointRepository
+import kr.spot.core.point.infrastrcuture.querydsl.PointCustomRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class PointKafkaEventListener(
     eventMetrics: EventMetrics,
     private val idGenerator: IdGenerator,
     private val pointHistoryRepository: PointHistoryRepository,
-    private val pointRepository: PointRepository
+    private val pointRepository: PointRepository,
+    private val pointCustomRepository: PointCustomRepository
 ) : AbstractEventConsumer<PointGrantedEvent>(
         eventMetrics = eventMetrics,
         consumerGroup = "core-point"
     ) {
     private val log = LoggerFactory.getLogger(javaClass)
+
+    companion object {
+        private const val DAILY_MAX_POINTS = 100L
+    }
 
     @Transactional
     @KafkaListener(topics = [Topics.POINT_EVENTS], groupId = "core-point")
@@ -43,8 +50,16 @@ class PointKafkaEventListener(
                 return
             }
 
-        pointHistoryRepository.save(createHistory(event))
-        point.increaseAmount(event.points)
+        val gainedPointsToday = pointCustomRepository.getGainedPointsToday(event.memberId, LocalDateTime.now())
+
+        if (gainedPointsToday >= DAILY_MAX_POINTS) {
+            log.info("[Kafka] Daily limit reached - memberId: {}, gained: {}", event.memberId, gainedPointsToday)
+            return
+        }
+
+        val allowedAmount = minOf(event.points, DAILY_MAX_POINTS - gainedPointsToday)
+        pointHistoryRepository.save(createHistory(event, allowedAmount))
+        point.increaseAmount(allowedAmount)
     }
 
     private fun isDuplicate(eventId: String): Boolean {
@@ -55,12 +70,12 @@ class PointKafkaEventListener(
         return duplicated
     }
 
-    private fun createHistory(event: PointGrantedEvent): PointHistory =
+    private fun createHistory(event: PointGrantedEvent, points: Long): PointHistory =
         PointHistory.of(
             id = idGenerator.nextId(),
             eventId = event.eventId,
             memberId = event.memberId,
-            points = event.points,
+            points = points,
             reason = event.reason,
             referenceId = event.referenceId ?: 0L,
             grantedAt = event.grantedAt

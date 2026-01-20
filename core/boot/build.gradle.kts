@@ -17,6 +17,9 @@ dependencies {
     // Spring Data JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    // QueryDSL
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
