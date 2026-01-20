@@ -1,12 +1,12 @@
 package kr.spot.study.core.infrastructure.batch
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.data.redis.core.ScanOptions
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
 
 @Component
 class StudyViewFlushJob(
@@ -16,16 +16,9 @@ class StudyViewFlushJob(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(cron = "0 * * * * *")
+    @SchedulerLock(name = "studyViewFlushJob", lockAtMostFor = "PT5M")
     fun flush() {
-        if (!tryAcquireLock()) {
-            log.debug("다른 인스턴스에서 실행 중")
-            return
-        }
-        try {
-            executeBatch()
-        } finally {
-            releaseLock()
-        }
+        executeBatch()
     }
 
     private fun executeBatch() {
@@ -115,18 +108,6 @@ class StudyViewFlushJob(
         }
     }
 
-    private fun tryAcquireLock(): Boolean {
-        val acquired =
-            redis
-                .opsForValue()
-                .setIfAbsent(LOCK_KEY, "1", LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        return acquired == true
-    }
-
-    private fun releaseLock() {
-        redis.delete(LOCK_KEY)
-    }
-
     private fun parseLong(value: String): Long =
         try {
             value.toLong()
@@ -157,10 +138,8 @@ class StudyViewFlushJob(
     }
 
     companion object {
-        private const val KEY_PREFIX = "view:study:"
+        private const val KEY_PREFIX = "view:delta:study:"
         private const val KEY_PATTERN = "$KEY_PREFIX*"
-        private const val LOCK_KEY = "lock:study-view-flush"
-        private const val LOCK_TIMEOUT_SECONDS = 55L
         private const val SCAN_COUNT = 500L
     }
 }

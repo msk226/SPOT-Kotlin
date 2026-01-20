@@ -15,6 +15,9 @@ dependencies {
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // ShedLock
+    implementation("net.javacrumbs.shedlock:shedlock-spring:5.16.0")
+
     // Kafka
     implementation("org.springframework.kafka:spring-kafka")
 
