@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPOT Admin Dashboard</title>
+    <title>SPOT Admin Dashboard (SSE)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -24,33 +24,86 @@
     </script>
     <style>
         body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: inherit;
+            animation: pulse-ring 1.5s ease-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useCallback } = React;
 
         // API Base URL
         const API_BASE = '';
 
-        // 통계 카드 컴포넌트
-        function StatCard({ title, value, suffix = '', icon, color, change }) {
+        // SSE 연결 상태
+        const ConnectionStatus = {
+            CONNECTING: 'connecting',
+            CONNECTED: 'connected',
+            DISCONNECTED: 'disconnected',
+            ERROR: 'error'
+        };
+
+        // 연결 상태 뱃지
+        function ConnectionBadge({ status }) {
+            const statusConfig = {
+                [ConnectionStatus.CONNECTING]: {
+                    bg: 'bg-yellow-100',
+                    text: 'text-yellow-700',
+                    dot: 'bg-yellow-500',
+                    label: '연결 중...'
+                },
+                [ConnectionStatus.CONNECTED]: {
+                    bg: 'bg-green-100',
+                    text: 'text-green-700',
+                    dot: 'bg-green-500',
+                    label: 'SSE 연결됨'
+                },
+                [ConnectionStatus.DISCONNECTED]: {
+                    bg: 'bg-gray-100',
+                    text: 'text-gray-700',
+                    dot: 'bg-gray-500',
+                    label: '연결 끊김'
+                },
+                [ConnectionStatus.ERROR]: {
+                    bg: 'bg-red-100',
+                    text: 'text-red-700',
+                    dot: 'bg-red-500',
+                    label: '연결 오류'
+                }
+            };
+
+            const config = statusConfig[status];
+
             return (
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div className={`flex items-center gap-2 px-3 py-1.5 ${config.bg} ${config.text} rounded-full text-sm`}>
+                    <span className={`relative w-2 h-2 ${config.dot} rounded-full ${status === ConnectionStatus.CONNECTED ? 'pulse-ring' : ''}`}></span>
+                    {config.label}
+                </div>
+            );
+        }
+
+        // 통계 카드 컴포넌트
+        function StatCard({ title, value, suffix = '', icon, color, isUpdated }) {
+            return (
+                <div className={`bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ${isUpdated ? 'border-primary ring-2 ring-primary/20' : 'border-gray-100'}`}>
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-gray-500 text-sm font-medium">{title}</p>
                             <p className="text-3xl font-bold mt-2 text-gray-900">
                                 {value.toLocaleString()}{suffix}
                             </p>
-                            {change !== undefined && (
-                                <p className={`text-sm mt-2 ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                    <i className={`ri-arrow-${change >= 0 ? 'up' : 'down'}-line`}></i>
-                                    {' '}{Math.abs(change)} {change >= 0 ? '증가' : '감소'}
-                                </p>
-                            )}
                         </div>
                         <div className={`w-14 h-14 rounded-xl ${color} flex items-center justify-center`}>
                             <i className={`${icon} text-2xl text-white`}></i>
@@ -119,8 +172,9 @@
         }
 
         // 시뮬레이터 패널
-        function SimulatorPanel({ onSimulate }) {
+        function SimulatorPanel() {
             const [loading, setLoading] = useState(false);
+            const [result, setResult] = useState(null);
             const [config, setConfig] = useState({
                 memberCount: 10,
                 attendanceCount: 50,
@@ -129,6 +183,7 @@
 
             const handleSimulate = async () => {
                 setLoading(true);
+                setResult(null);
                 try {
                     const res = await fetch(`${API_BASE}/api/admin/simulator/dashboard/simulate`, {
                         method: 'POST',
@@ -137,10 +192,12 @@
                     });
                     const data = await res.json();
                     if (data.isSuccess) {
-                        onSimulate();
+                        setResult({ success: true, message: '이벤트가 발행되었습니다. SSE로 자동 업데이트됩니다.' });
+                    } else {
+                        setResult({ success: false, message: data.message || '시뮬레이션 실패' });
                     }
                 } catch (err) {
-                    console.error('Simulation failed:', err);
+                    setResult({ success: false, message: err.message });
                 }
                 setLoading(false);
             };
@@ -180,6 +237,12 @@
                             />
                         </div>
                     </div>
+                    {result && (
+                        <div className={`mb-4 p-3 rounded-lg text-sm ${result.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                            <i className={`${result.success ? 'ri-check-line' : 'ri-error-warning-line'} mr-2`}></i>
+                            {result.message}
+                        </div>
+                    )}
                     <button
                         onClick={handleSimulate}
                         disabled={loading}
@@ -195,29 +258,33 @@
             );
         }
 
-        // 최근 활동 피드
-        function ActivityFeed({ stats }) {
-            const activities = [
-                { icon: 'ri-user-add-line', color: 'bg-green-500', text: `신규 회원 ${stats.memberStats?.newMemberCount || 0}명 가입` },
-                { icon: 'ri-checkbox-circle-line', color: 'bg-blue-500', text: `출석 체크 ${stats.attendanceStats?.totalCount || 0}건 완료` },
-                { icon: 'ri-coin-line', color: 'bg-yellow-500', text: `포인트 ${stats.pointStats?.totalGranted?.toLocaleString() || 0}P 지급` },
-            ];
-
+        // 이벤트 로그
+        function EventLog({ events }) {
             return (
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        <i className="ri-time-line mr-2 text-primary"></i>
-                        오늘의 활동
+                        <i className="ri-terminal-line mr-2 text-primary"></i>
+                        SSE 이벤트 로그
                     </h3>
-                    <div className="space-y-4">
-                        {activities.map((activity, idx) => (
-                            <div key={idx} className="flex items-center gap-3">
-                                <div className={`w-10 h-10 rounded-full ${activity.color} flex items-center justify-center`}>
-                                    <i className={`${activity.icon} text-white`}></i>
+                    <div className="h-48 overflow-y-auto space-y-2 font-mono text-sm">
+                        {events.length === 0 ? (
+                            <p className="text-gray-400">이벤트를 기다리는 중...</p>
+                        ) : (
+                            events.map((event, idx) => (
+                                <div key={idx} className="flex gap-2 text-gray-600 border-b border-gray-50 pb-2">
+                                    <span className="text-gray-400 shrink-0">{event.time}</span>
+                                    <span className={`px-2 py-0.5 rounded text-xs shrink-0 ${
+                                        event.type === 'connected' ? 'bg-green-100 text-green-700' :
+                                        event.type === 'stats' ? 'bg-blue-100 text-blue-700' :
+                                        event.type === 'error' ? 'bg-red-100 text-red-700' :
+                                        'bg-gray-100 text-gray-700'
+                                    }`}>
+                                        {event.type}
+                                    </span>
+                                    <span className="truncate">{event.message}</span>
                                 </div>
-                                <p className="text-gray-700">{activity.text}</p>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </div>
             );
@@ -228,47 +295,108 @@
             const [stats, setStats] = useState(null);
             const [hourlyStats, setHourlyStats] = useState([]);
             const [loading, setLoading] = useState(true);
+            const [connectionStatus, setConnectionStatus] = useState(ConnectionStatus.DISCONNECTED);
             const [lastUpdated, setLastUpdated] = useState(null);
-            const [autoRefresh, setAutoRefresh] = useState(true);
+            const [events, setEvents] = useState([]);
+            const [updatedFields, setUpdatedFields] = useState({});
+            const eventSourceRef = useRef(null);
 
-            const fetchStats = async () => {
+            const addEvent = useCallback((type, message) => {
+                const time = new Date().toLocaleTimeString();
+                setEvents(prev => [{time, type, message}, ...prev].slice(0, 50));
+            }, []);
+
+            const fetchHourlyStats = async () => {
                 try {
-                    const [realtimeRes, hourlyRes] = await Promise.all([
-                        fetch(`${API_BASE}/api/admin/dashboard/stats/realtime`),
-                        fetch(`${API_BASE}/api/admin/dashboard/stats/hourly`)
-                    ]);
-
-                    const realtimeData = await realtimeRes.json();
-                    const hourlyData = await hourlyRes.json();
-
-                    if (realtimeData.isSuccess) {
-                        setStats(realtimeData.result);
+                    const res = await fetch(`${API_BASE}/api/admin/dashboard/stats/hourly`);
+                    const data = await res.json();
+                    if (data.isSuccess) {
+                        setHourlyStats(data.result);
                     }
-                    if (hourlyData.isSuccess) {
-                        setHourlyStats(hourlyData.result);
-                    }
-                    setLastUpdated(new Date());
                 } catch (err) {
-                    console.error('Failed to fetch stats:', err);
+                    console.error('Failed to fetch hourly stats:', err);
                 }
-                setLoading(false);
             };
 
+            // SSE 연결
             useEffect(() => {
-                fetchStats();
+                const connectSSE = () => {
+                    setConnectionStatus(ConnectionStatus.CONNECTING);
+                    addEvent('system', 'SSE 연결 시도 중...');
 
-                if (autoRefresh) {
-                    const interval = setInterval(fetchStats, 5000);
-                    return () => clearInterval(interval);
-                }
-            }, [autoRefresh]);
+                    const eventSource = new EventSource(`${API_BASE}/api/admin/dashboard/stats/stream`);
+                    eventSourceRef.current = eventSource;
+
+                    eventSource.addEventListener('connected', (event) => {
+                        setConnectionStatus(ConnectionStatus.CONNECTED);
+                        addEvent('connected', 'SSE 연결 성공');
+                        setLoading(false);
+                    });
+
+                    eventSource.addEventListener('stats', (event) => {
+                        try {
+                            const newStats = JSON.parse(event.data);
+
+                            // 변경된 필드 감지
+                            setStats(prev => {
+                                if (prev) {
+                                    const changed = {};
+                                    if (prev.memberStats?.newMemberCount !== newStats.memberStats?.newMemberCount) {
+                                        changed.member = true;
+                                    }
+                                    if (prev.attendanceStats?.totalCount !== newStats.attendanceStats?.totalCount) {
+                                        changed.attendance = true;
+                                    }
+                                    if (prev.pointStats?.totalGranted !== newStats.pointStats?.totalGranted) {
+                                        changed.pointTotal = true;
+                                    }
+                                    if (prev.pointStats?.grantCount !== newStats.pointStats?.grantCount) {
+                                        changed.pointCount = true;
+                                    }
+                                    setUpdatedFields(changed);
+                                    setTimeout(() => setUpdatedFields({}), 1000);
+                                }
+                                return newStats;
+                            });
+
+                            setLastUpdated(new Date());
+                            addEvent('stats', `회원: ${newStats.memberStats?.newMemberCount || 0}, 출석: ${newStats.attendanceStats?.totalCount || 0}, 포인트: ${newStats.pointStats?.totalGranted || 0}P`);
+
+                            // 차트도 업데이트
+                            fetchHourlyStats();
+                        } catch (err) {
+                            console.error('Failed to parse stats:', err);
+                            addEvent('error', '데이터 파싱 실패');
+                        }
+                    });
+
+                    eventSource.onerror = (error) => {
+                        console.error('SSE Error:', error);
+                        setConnectionStatus(ConnectionStatus.ERROR);
+                        addEvent('error', 'SSE 연결 오류 - 5초 후 재연결');
+                        eventSource.close();
+
+                        // 재연결 시도
+                        setTimeout(connectSSE, 5000);
+                    };
+                };
+
+                connectSSE();
+                fetchHourlyStats();
+
+                return () => {
+                    if (eventSourceRef.current) {
+                        eventSourceRef.current.close();
+                    }
+                };
+            }, [addEvent]);
 
             if (loading) {
                 return (
                     <div className="min-h-screen flex items-center justify-center">
                         <div className="text-center">
                             <i className="ri-loader-4-line text-4xl text-primary animate-spin"></i>
-                            <p className="mt-4 text-gray-500">대시보드 로딩 중...</p>
+                            <p className="mt-4 text-gray-500">SSE 연결 중...</p>
                         </div>
                     </div>
                 );
@@ -286,29 +414,17 @@
                                     </div>
                                     <div>
                                         <h1 className="text-xl font-bold text-gray-900">SPOT Admin</h1>
-                                        <p className="text-sm text-gray-500">실시간 대시보드</p>
+                                        <p className="text-sm text-gray-500">실시간 대시보드 (SSE)</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <a href="index-sse.html" className="text-sm text-gray-500 hover:text-primary">
-                                        <i className="ri-broadcast-line mr-1"></i>SSE 버전으로
+                                    <a href="index.html" className="text-sm text-gray-500 hover:text-primary">
+                                        <i className="ri-refresh-line mr-1"></i>폴링 버전으로
                                     </a>
-                                    <label className="flex items-center gap-2 text-sm text-gray-600">
-                                        <input
-                                            type="checkbox"
-                                            checked={autoRefresh}
-                                            onChange={e => setAutoRefresh(e.target.checked)}
-                                            className="rounded"
-                                        />
-                                        자동 새로고침 (5초)
-                                    </label>
-                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-full text-sm">
-                                        <span className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></span>
-                                        Polling
-                                    </div>
+                                    <ConnectionBadge status={connectionStatus} />
                                     {lastUpdated && (
                                         <span className="text-sm text-gray-400">
-                                            {lastUpdated.toLocaleTimeString()} 업데이트
+                                            마지막 업데이트: {lastUpdated.toLocaleTimeString()}
                                         </span>
                                     )}
                                 </div>
@@ -326,6 +442,7 @@
                                 suffix="명"
                                 icon="ri-user-add-line"
                                 color="bg-green-500"
+                                isUpdated={updatedFields.member}
                             />
                             <StatCard
                                 title="오늘 출석"
@@ -333,6 +450,7 @@
                                 suffix="건"
                                 icon="ri-checkbox-circle-line"
                                 color="bg-blue-500"
+                                isUpdated={updatedFields.attendance}
                             />
                             <StatCard
                                 title="포인트 지급"
@@ -340,6 +458,7 @@
                                 suffix="P"
                                 icon="ri-coin-line"
                                 color="bg-yellow-500"
+                                isUpdated={updatedFields.pointTotal}
                             />
                             <StatCard
                                 title="지급 건수"
@@ -347,6 +466,7 @@
                                 suffix="건"
                                 icon="ri-exchange-line"
                                 color="bg-purple-500"
+                                isUpdated={updatedFields.pointCount}
                             />
                         </div>
 
@@ -366,8 +486,8 @@
 
                         {/* Bottom Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <SimulatorPanel onSimulate={fetchStats} />
-                            <ActivityFeed stats={stats || {}} />
+                            <SimulatorPanel />
+                            <EventLog events={events} />
                         </div>
                     </main>
                 </div>
