@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPOT Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#6366F1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // API Base URL
+        const API_BASE = '';
+
+        // 통계 카드 컴포넌트
+        function StatCard({ title, value, suffix = '', icon, color, change }) {
+            return (
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-gray-500 text-sm font-medium">{title}</p>
+                            <p className="text-3xl font-bold mt-2 text-gray-900">
+                                {value.toLocaleString()}{suffix}
+                            </p>
+                            {change !== undefined && (
+                                <p className={`text-sm mt-2 ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    <i className={`ri-arrow-${change >= 0 ? 'up' : 'down'}-line`}></i>
+                                    {' '}{Math.abs(change)} {change >= 0 ? '증가' : '감소'}
+                                </p>
+                            )}
+                        </div>
+                        <div className={`w-14 h-14 rounded-xl ${color} flex items-center justify-center`}>
+                            <i className={`${icon} text-2xl text-white`}></i>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 차트 컴포넌트
+        function AttendanceChart({ hourlyData }) {
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+
+                const ctx = chartRef.current.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+                gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+                chartInstance.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: hourlyData.map(d => `${d.hour}:00`),
+                        datasets: [{
+                            label: '출석 수',
+                            data: hourlyData.map(d => d.attendanceCount),
+                            borderColor: '#3B82F6',
+                            backgroundColor: gradient,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3B82F6',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#f3f4f6' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [hourlyData]);
+
+            return <canvas ref={chartRef}></canvas>;
+        }
+
+        // 시뮬레이터 패널
+        function SimulatorPanel({ onSimulate }) {
+            const [loading, setLoading] = useState(false);
+            const [config, setConfig] = useState({
+                memberCount: 10,
+                attendanceCount: 50,
+                pointCount: 50
+            });
+
+            const handleSimulate = async () => {
+                setLoading(true);
+                try {
+                    const res = await fetch(`${API_BASE}/api/admin/simulator/dashboard/simulate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(config)
+                    });
+                    const data = await res.json();
+                    if (data.isSuccess) {
+                        onSimulate();
+                    }
+                } catch (err) {
+                    console.error('Simulation failed:', err);
+                }
+                setLoading(false);
+            };
+
+            return (
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <i className="ri-flask-line mr-2 text-primary"></i>
+                        이벤트 시뮬레이터
+                    </h3>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label className="text-sm text-gray-500">회원 가입</label>
+                            <input
+                                type="number"
+                                value={config.memberCount}
+                                onChange={e => setConfig({...config, memberCount: parseInt(e.target.value) || 0})}
+                                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500">출석 체크</label>
+                            <input
+                                type="number"
+                                value={config.attendanceCount}
+                                onChange={e => setConfig({...config, attendanceCount: parseInt(e.target.value) || 0})}
+                                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500">포인트 지급</label>
+                            <input
+                                type="number"
+                                value={config.pointCount}
+                                onChange={e => setConfig({...config, pointCount: parseInt(e.target.value) || 0})}
+                                className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleSimulate}
+                        disabled={loading}
+                        className="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+                    >
+                        {loading ? (
+                            <><i className="ri-loader-4-line animate-spin mr-2"></i>처리 중...</>
+                        ) : (
+                            <><i className="ri-play-circle-line mr-2"></i>시뮬레이션 실행</>
+                        )}
+                    </button>
+                </div>
+            );
+        }
+
+        // 최근 활동 피드
+        function ActivityFeed({ stats }) {
+            const activities = [
+                { icon: 'ri-user-add-line', color: 'bg-green-500', text: `신규 회원 ${stats.memberStats?.newMemberCount || 0}명 가입` },
+                { icon: 'ri-checkbox-circle-line', color: 'bg-blue-500', text: `출석 체크 ${stats.attendanceStats?.totalCount || 0}건 완료` },
+                { icon: 'ri-coin-line', color: 'bg-yellow-500', text: `포인트 ${stats.pointStats?.totalGranted?.toLocaleString() || 0}P 지급` },
+            ];
+
+            return (
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <i className="ri-time-line mr-2 text-primary"></i>
+                        오늘의 활동
+                    </h3>
+                    <div className="space-y-4">
+                        {activities.map((activity, idx) => (
+                            <div key={idx} className="flex items-center gap-3">
+                                <div className={`w-10 h-10 rounded-full ${activity.color} flex items-center justify-center`}>
+                                    <i className={`${activity.icon} text-white`}></i>
+                                </div>
+                                <p className="text-gray-700">{activity.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // 메인 대시보드
+        function Dashboard() {
+            const [stats, setStats] = useState(null);
+            const [hourlyStats, setHourlyStats] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [lastUpdated, setLastUpdated] = useState(null);
+            const [autoRefresh, setAutoRefresh] = useState(true);
+
+            const fetchStats = async () => {
+                try {
+                    const [realtimeRes, hourlyRes] = await Promise.all([
+                        fetch(`${API_BASE}/api/admin/dashboard/stats/realtime`),
+                        fetch(`${API_BASE}/api/admin/dashboard/stats/hourly`)
+                    ]);
+
+                    const realtimeData = await realtimeRes.json();
+                    const hourlyData = await hourlyRes.json();
+
+                    if (realtimeData.isSuccess) {
+                        setStats(realtimeData.result);
+                    }
+                    if (hourlyData.isSuccess) {
+                        setHourlyStats(hourlyData.result);
+                    }
+                    setLastUpdated(new Date());
+                } catch (err) {
+                    console.error('Failed to fetch stats:', err);
+                }
+                setLoading(false);
+            };
+
+            useEffect(() => {
+                fetchStats();
+
+                if (autoRefresh) {
+                    const interval = setInterval(fetchStats, 5000);
+                    return () => clearInterval(interval);
+                }
+            }, [autoRefresh]);
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <i className="ri-loader-4-line text-4xl text-primary animate-spin"></i>
+                            <p className="mt-4 text-gray-500">대시보드 로딩 중...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen">
+                    {/* Header */}
+                    <header className="bg-white border-b border-gray-200">
+                        <div className="max-w-7xl mx-auto px-6 py-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+                                        <i className="ri-dashboard-3-line text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h1 className="text-xl font-bold text-gray-900">SPOT Admin</h1>
+                                        <p className="text-sm text-gray-500">실시간 대시보드</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2 text-sm text-gray-600">
+                                        <input
+                                            type="checkbox"
+                                            checked={autoRefresh}
+                                            onChange={e => setAutoRefresh(e.target.checked)}
+                                            className="rounded"
+                                        />
+                                        자동 새로고침 (5초)
+                                    </label>
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-sm">
+                                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                        Live
+                                    </div>
+                                    {lastUpdated && (
+                                        <span className="text-sm text-gray-400">
+                                            {lastUpdated.toLocaleTimeString()} 업데이트
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="max-w-7xl mx-auto px-6 py-8">
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <StatCard
+                                title="신규 가입"
+                                value={stats?.memberStats?.newMemberCount || 0}
+                                suffix="명"
+                                icon="ri-user-add-line"
+                                color="bg-green-500"
+                            />
+                            <StatCard
+                                title="오늘 출석"
+                                value={stats?.attendanceStats?.totalCount || 0}
+                                suffix="건"
+                                icon="ri-checkbox-circle-line"
+                                color="bg-blue-500"
+                            />
+                            <StatCard
+                                title="포인트 지급"
+                                value={stats?.pointStats?.totalGranted || 0}
+                                suffix="P"
+                                icon="ri-coin-line"
+                                color="bg-yellow-500"
+                            />
+                            <StatCard
+                                title="지급 건수"
+                                value={stats?.pointStats?.grantCount || 0}
+                                suffix="건"
+                                icon="ri-exchange-line"
+                                color="bg-purple-500"
+                            />
+                        </div>
+
+                        {/* Chart Section */}
+                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-8">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                    <i className="ri-line-chart-line mr-2 text-primary"></i>
+                                    시간대별 출석 현황
+                                </h3>
+                                <span className="text-sm text-gray-500">{stats?.date}</span>
+                            </div>
+                            <div className="h-80">
+                                <AttendanceChart hourlyData={hourlyStats} />
+                            </div>
+                        </div>
+
+                        {/* Bottom Section */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <SimulatorPanel onSimulate={fetchStats} />
+                            <ActivityFeed stats={stats || {}} />
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        // Render
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Dashboard />);
+    </script>
+</body>
+</html>
